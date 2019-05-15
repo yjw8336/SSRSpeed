@@ -1,6 +1,0 @@
-pillow
-requests
-pysocks
-flask
-flask-cors
-pyyaml
