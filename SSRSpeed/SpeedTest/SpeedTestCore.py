@@ -22,10 +22,10 @@ class SpeedTestCore(object):
 			"loss": -1,
 			"ping": -1,
 			"gPingLoss": -1,
-			"gPing": -1,
+			"gPing": 0,
 			"dspeed": -1,
 			"maxDSpeed": -1,
-			"trafficUsed": -1,
+			"trafficUsed": 0,
 			"geoIP":{
 				"inbound":{
 					"address": "N/A",
