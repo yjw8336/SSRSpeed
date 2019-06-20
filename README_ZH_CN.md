@@ -26,6 +26,7 @@
  - SpeedTestNet和Fast方式已停止支持
  - MacOS 下暂未找到合适的方式检测libsodium，所以请务必保证在测试使用chacha20等加密方式的节点前保证libsodium已安装
  - Shadowsocks-libev 和 Simple-Obfs 推荐使用编译安装的方式进行安装，已知在Debian仓库中的Shadowsocks-libev版本过低导致无法使用一些新加密方式
+ - 如果您的主机名中带有非ASCII字符，Web-UI将无法使用
 
 
 ## 特点
