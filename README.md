@@ -28,6 +28,7 @@ Batch speed measuring tool based on Shadowsocks(R)
  - SpeedTestNet and Fast.com is no longer supported.
  - MacOS has not found a suitable way to detect libsodium, so be sure to ensure that libsodium is installed before testing nodes that use encryption methods such as chacha20.
  - Shadowsocks-libev and Simple-Obfs are recommended to be installed using a compiled installation. It is known that the Shadowsocks-libev version in the Debian repository is too low to use some new encryption methods.
+ - If your hostname has non-ASCII characters, Web-UI will not work.
 
 ## Features
 
