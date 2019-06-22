@@ -124,7 +124,7 @@ class SpeedTestCore(object):
 					pass
 			self.__client.stopClient()
 			self.__results.append(_item)
-			logger.info("[{}] - [{}] - Loss: [{}%] - TCP Ping: [{}] - Google Loss: [{}%] - Google Ping: [{}]".format
+			logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}]".format
 				(
 					_item["group"],
 					_item["remarks"],
@@ -195,7 +195,7 @@ class SpeedTestCore(object):
 				_item["ping"] = latencyTest[0]
 				_item["rawTcpPingStatus"] = latencyTest[2]
 				self.__results.append(_item)
-				logger.info("[{}] - [{}] - Loss: [{}%] - TCP Ping: [{}] - Google Loss: [{}%] - Google Ping: [{}] - AvgSpeed: [{:.2f}MB/s] - MaxSpeed: [{:.2f}MB/s]".format
+				logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - AvgSpeed: [{:.2f}MB/s] - MaxSpeed: [{:.2f}MB/s]".format
 					(
 						_item["group"],
 						_item["remarks"],
