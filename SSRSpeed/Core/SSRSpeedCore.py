@@ -74,6 +74,15 @@ class SSRSpeedCore(object):
 			self.__parser.cleanConfigs()
 			self.__parser.addConfigs(configs)
 
+	def consoleReadSubscription(self, url):
+		if (self.__parser):
+			self.__parser.readSubscriptionConfig(url)
+
+	def consoleReadFileConfigs(self, filename):
+		if (self.__parser):
+			self.__parser.readGuiConfig(filename)
+
+
 	def startTest(self):
 		self.__timeStampStart = time.time()
 		self.__stc = SpeedTestCore(self.__parser,self.__client,self.testMethod)

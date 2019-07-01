@@ -9,6 +9,7 @@ import logging
 
 from SSRSpeed.ThreadPool.thread_pool import ThreadPool
 from SSRSpeed.ThreadPool.abstract_task import AbstractTask
+from SSRSpeed.Utils.IPGeo import parseLocation
 
 logger = logging.getLogger("Sub")
 
@@ -32,13 +33,19 @@ def startWebPageSimulationTest(localHost, localPort):
 		"https": "socks5://{}:{}".format(localHost, localPort)
 	}
 	maxThread = wConfig.get("maxThread", 4)
+	ipLoc = parseLocation()
 	urls = copy.deepcopy(wConfig.get("urls", []))
+	if (ipLoc[0]):
+		if (ipLoc[1] == "CN"):
+			urls = copy.deepcopy(wConfig.get("cnUrls", []))
+	logger.info("Read {} url(s)".format(len(urls)))
 	threadPool = ThreadPool(maxThread, tasklist)
 	for url in urls:
 		task = WpsTask(url=url, proxies=proxies)
 		tasklist.put(task)
 	
 	threadPool.join()
+	return results
 
 
 class WpsTask(AbstractTask):
@@ -66,10 +73,11 @@ class WpsTask(AbstractTask):
 		except requests.exceptions.SSLError:
 			logger.error("SSL Error on : {}".format(self.url))
 		except:
-			logger.exception("")
+			logger.exception("Unknown Error on : {}".format(self.url))
 		finally:
-			pass
-
+			resLock.acquire()
+			results.append(res)
+			resLock.release()
 '''
 def wpsThread(url, proxies):
 	logger.debug("Thread {} started.Url: {}.".format(threading.current_thread().ident, url))

@@ -43,7 +43,7 @@ def pinggoogletest(address,port=1080):
 	while (suc < 5 and fac < 5):
 		try:
 			s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			s.settimeout(5)
+			s.settimeout(3)
 			s.connect((address,port))
 			st=time.time()
 			s.send(b"\x05\x01\x00")

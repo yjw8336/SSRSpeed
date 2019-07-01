@@ -40,7 +40,7 @@ class SpeedTestCore(object):
 			"rawTcpPingStatus": [],
 			"rawGooglePingStatus": [],
 			"webPageSimulation":{
-
+				"results":[]
 			}
 		}
 
@@ -71,7 +71,7 @@ class SpeedTestCore(object):
 				inboundGeo
 			)
 		)
-		return (inboundIP,inboundGeo)
+		return (inboundIP,inboundGeo,inboundInfo.get("country_code", "N/A"))
 
 	def __geoIPOutbound(self):
 		outboundInfo = IPLoc()
@@ -87,7 +87,7 @@ class SpeedTestCore(object):
 				outboundGeo
 			)
 		)
-		return (outboundIP, outboundGeo)
+		return (outboundIP, outboundGeo, outboundInfo.get("country_code", "N/A"))
 
 	def __tcpPing(self, server, port):
 		res = {
@@ -135,12 +135,15 @@ class SpeedTestCore(object):
 			if (isinstance(pingResult, dict)):
 				for k in pingResult.keys():
 					_item[k] = pingResult[k]
-			if (_item["gPing"] > 0):
+
+			outboundInfo = self.__geoIPOutbound()
+			_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
+			_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
+			if (_item["gPing"] > 0 or outboundInfo[2] == "CN"):
 				st = SpeedTest()
-				res = st.startTest(self.__testMethod)
-				outboundInfo = self.__geoIPOutbound()
-				_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
-				_item["geoIP"]["outbound"]["info"] = outboundInfo[1]	
+				res = st.startWpsTest()
+				_item["webPageSimulation"]["results"] = res
+
 			self.__client.stopClient()
 			self.__results.append(_item)
 			logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - [WebPageSimulation]".format
@@ -176,10 +179,10 @@ class SpeedTestCore(object):
 			if (isinstance(pingResult, dict)):
 				for k in pingResult.keys():
 					_item[k] = pingResult[k]
-			if (_item["gPing"] > 0):
-				outboundInfo = self.__geoIPOutbound()
-				_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
-				_item["geoIP"]["outbound"]["info"] = outboundInfo[1]	
+		#	if (_item["gPing"] > 0):
+			outboundInfo = self.__geoIPOutbound()
+			_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
+			_item["geoIP"]["outbound"]["info"] = outboundInfo[1]	
 			self.__client.stopClient()
 			self.__results.append(_item)
 			logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}]".format
@@ -223,7 +226,11 @@ class SpeedTestCore(object):
 				if (isinstance(pingResult, dict)):
 					for k in pingResult.keys():
 						_item[k] = pingResult[k]
-				if (_item["gPing"] > 0):
+				outboundInfo = self.__geoIPOutbound()
+				_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
+				_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
+				if (_item["gPing"] > 0 or outboundInfo[2] == "CN"):
+			#	if (_item["gPing"] > 0):
 					st = SpeedTest()
 					time.sleep(1)
 					testRes = st.startTest(self.__testMethod)
@@ -238,9 +245,9 @@ class SpeedTestCore(object):
 					except:
 						pass	
 
-					outboundInfo = self.__geoIPOutbound()
-					_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
-					_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
+			#		outboundInfo = self.__geoIPOutbound()
+			#		_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
+			#		_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
 
 					time.sleep(1)
 				self.__client.stopClient()

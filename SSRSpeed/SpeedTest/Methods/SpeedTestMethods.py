@@ -73,12 +73,11 @@ class SpeedTest(object):
 			except:
 				logger.exception("")
 				return 0
-
-		elif (method == "WEB_PAGE_SIMULATION"):
-			return webpage_simulation.startWebPageSimulationTest(LOCAL_ADDRESS, LOCAL_PORT)
-
 		else:
 			raise Exception("Invalid test method %s" % method)
+
+	def startWpsTest(self):
+		return webpage_simulation.startWebPageSimulationTest(LOCAL_ADDRESS, LOCAL_PORT)
 
 	def googlePing(self):
 		logger.info("Testing latency to google.")

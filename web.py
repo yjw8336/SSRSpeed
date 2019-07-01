@@ -65,7 +65,7 @@ def index():
 	{
 		"proxyType":"SSR", //[SSR,SSR-C#,SS,V2RAY]
 		"testMethod":"SOCKET", //[SOCKET,SPEED_TEST_NET,FAST]
-		"testMode":"",//[ALL,TCP_PING]
+		"testMode":"",//[ALL,TCP_PING,WEB_PAGE_SIMULATION]
 		"subscriptionUrl":"",
 		"colors":"origin",
 		"sortMethod":"",//[SPEED,REVERSE_SPEED,PING,REVERSE_PING]
