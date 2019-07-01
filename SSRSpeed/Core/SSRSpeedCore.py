@@ -82,6 +82,8 @@ class SSRSpeedCore(object):
 			self.__stc.tcpingOnly()
 		elif(self.testMode == "ALL"):
 			self.__stc.fullTest()
+		elif (self.testMode == "WEB_PAGE_SIMULATION"):
+			self.__stc.webPageSimulation()
 		self.__status = "stopped"
 		self.__results = self.__stc.getResult()
 		self.__timeStampStop = time.time()
