@@ -44,6 +44,13 @@ def setOpts(parser):
 		help="Set listen port for web server."
 		)
 	parser.add_option(
+		"--skip-requirements-check",
+		action="store_true",
+		dest="skip_requirements_check",
+		default=False,
+		help="Skip requirements check."
+		)
+	parser.add_option(
 		"--debug",
 		action="store_true",
 		dest="debug",

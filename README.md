@@ -91,6 +91,8 @@ The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
                             [speed,rspeed,ping,rping],default not sorted.
       -i IMPORT_FILE, --import=IMPORT_FILE
                             Import test result from json file and export it.
+      --skip-requirements-check
+                            Skip requirements check.
       --debug               Run program in debug mode.
 
 

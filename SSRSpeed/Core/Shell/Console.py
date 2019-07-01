@@ -150,6 +150,13 @@ def setOpts(parser):
 		help="Import test result from json file and export it."
 		)
 	parser.add_option(
+		"--skip-requirements-check",
+		action="store_true",
+		dest="skip_requirements_check",
+		default=False,
+		help="Skip requirements check."
+		)
+	parser.add_option(
 		"--debug",
 		action="store_true",
 		dest="debug",

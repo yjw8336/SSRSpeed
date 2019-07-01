@@ -178,8 +178,11 @@ if (__name__ == "__main__"):
 	if (logger.level == logging.DEBUG):
 		logger.debug("Program running in debug mode")
 
-	rc = RequirementCheck()
-	rc.check()
+	if not options.skip_requirements_check:
+		rc = RequirementCheck()
+		rc.check()
+	else:
+		logger.warn("Requirements check skipped.")
 
 	sc = SSRSpeedCore()
 	sc.webMode = True
