@@ -33,6 +33,7 @@ class ExportResult(object):
 		self.__colors = {}
 		self.__colorSpeedList = []
 		self.__font = ImageFont.truetype(self.__config["font"],18)
+		self.__timeUsed = "N/A"
 	#	self.setColors()
 
 	def setColors(self,name = "origin"):
@@ -49,6 +50,10 @@ class ExportResult(object):
 				self.__colorSpeedList.sort()
 				return
 		logger.warn("Color {} not found in config.".format(name))
+
+	def setTimeUsed(self, timeUsed):
+		self.__timeUsed = time.strftime("%H:%M:%S", time.gmtime(timeUsed))
+		logger.info("Time Used : {}".format(self.__timeUsed))
 
 	def export(self,result,split = 0,exportType = 0,sortMethod = ""):
 		if (not exportType):
@@ -258,8 +263,9 @@ class ExportResult(object):
 			trafficUsed = self.__parseTraffic(totalTraffic)
 
 		draw.text((5, imageHeight + 30 + 4),
-			"Traffic used : {}. Online Node(s) : [{}/{}]".format(
+			"Traffic used : {}. Time used: {}. Online Node(s) : [{}/{}]".format(
 				trafficUsed,
+				self.__timeUsed,
 				onlineNode,
 				len(result)
 			),

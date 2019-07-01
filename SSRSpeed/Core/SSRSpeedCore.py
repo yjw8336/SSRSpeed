@@ -38,6 +38,8 @@ class SSRSpeedCore(object):
 		self.subscriptionUrl = ""
 		self.configFile = ""
 		
+		self.__timeStampStart = -1
+		self.__timeStampStop = -1
 		self.__client = None
 		self.__parser = None
 		self.__stc = None
@@ -73,6 +75,7 @@ class SSRSpeedCore(object):
 			self.__parser.addConfigs(configs)
 
 	def startTest(self):
+		self.__timeStampStart = time.time()
 		self.__stc = SpeedTestCore(self.__parser,self.__client,self.testMethod)
 		self.__status = "running"
 		if (self.testMode == "TCP_PING"):
@@ -81,6 +84,7 @@ class SSRSpeedCore(object):
 			self.__stc.fullTest()
 		self.__status = "stopped"
 		self.__results = self.__stc.getResult()
+		self.__timeStampStop = time.time()
 		self.__exportResult()
 
 	def __getParserByProxyType(self,proxyType):
@@ -152,6 +156,7 @@ class SSRSpeedCore(object):
 	def __exportResult(self,split = 0,exportType= 0):
 		er = ExportResult()
 		er.setColors(self.colors)
+		er.setTimeUsed(self.__timeStampStop - self.__timeStampStart)
 		er.export(self.__results,split,exportType,self.sortMethod)
 
 
