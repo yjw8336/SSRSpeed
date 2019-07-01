@@ -1,9 +1,6 @@
 
 
 
-
-
-  
 <h1 align="center">
     <br>SSRSpeed
 </h1>
@@ -41,13 +38,7 @@ Batch speed measuring tool based on Shadowsocks(R)
 ## Requirements 
 
 Universal dependency
-- Python >= 3.6
-- pillow
-- requests
-- pysocks
-- flask
-- flask-cors
-- pyyaml
+See `requirements.txt`
 
 Linux dependency
  - [libsodium](https://github.com/jedisct1/libsodium)
@@ -55,14 +46,18 @@ Linux dependency
  - [Simple-Obfs](https://github.com/shadowsocks/simple-obfs)
 
 ## Platform Support
+### Platform Tested
 1. Windows 10 x64
 2. Ubuntu 18.04 LTS
-3. MacOS
+
+### Theoretical Platform Support 
+The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
+
 
 ## Getting started
 
 ### Console Usage
-pip(pip3) install -r requirements.txt
+`pip(pip3) install -r requirements.txt`
 
     python .\main.py
     Usage: main.py [options] arg1 arg2...
@@ -100,9 +95,9 @@ pip(pip3) install -r requirements.txt
 
 
 Example usage :
-- python main.py -c gui-config.json --include 韩国 --include-remark Azure --include-group YoYu
-- python main.py -u https://my.yoyutrans.com/subscriptionlink --include 香港 Azure --include-group YoYu --exclude Azure
-- python main.py -u https://my.yoyutrans.com/subscriptionlink -t ss
+- `python main.py -c gui-config.json --include 韩国 --include-remark Azure --include-group YoYu`
+- `python main.py -u https://my.yoyutrans.com/subscriptionlink --include 香港 Azure --include-group YoYu --exclude Azure`
+- `python main.py -u https://my.yoyutrans.com/subscriptionlink -t ss`
 
 The parameter priority is as follows:
 
@@ -204,7 +199,8 @@ Response (No Configs) => "no configs"
 |Mode|Remark|
 |:-:|:-:|
 |TCP_PING|Only tcp ping, no speed test|
-|ALL|Full test|
+|WEB_PAGE_SIMULATION|Web page simulation test|
+|ALL|Full speed test (exclude web page simulation)|
 
  - Test Methods
 
