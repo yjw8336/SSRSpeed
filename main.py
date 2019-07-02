@@ -51,6 +51,8 @@ if (__name__ == "__main__"):
 		logger.critical("Your system does not supported.Please contact developer.")
 		sys.exit(1)
 
+	
+
 	DEBUG = False
 	CONFIG_LOAD_MODE = 0 #0 for import result,1 for guiconfig,2 for subscription url
 	CONFIG_FILENAME = ""
@@ -103,6 +105,8 @@ if (__name__ == "__main__"):
 			item.setLevel(logging.INFO)
 			item.addHandler(fileHandler)
 			item.addHandler(consoleHandler)
+
+	logger.info("SSRSpeed {}, Web Api Version {}".format(config["VERSION"], config["WEB_API_VERSION"]))
 
 	if (logger.level == logging.DEBUG):
 		logger.debug("Program running in debug mode")
@@ -201,13 +205,6 @@ if (__name__ == "__main__"):
 		else:
 			logger.error("Sort method %s not support." % sm)
 
-	if (options.import_file and CONFIG_LOAD_MODE == 0):
-		IMPORT_FILENAME = options.import_file
-		er = ExportResult()
-		er.setColors(RESULT_IMAGE_COLOR)
-		er.export(importResult.importResult(IMPORT_FILENAME),SPLIT_CNT,1,SORT_METHOD)
-		sys.exit(0)
-
 	'''
 	if (PROXY_TYPE == "SSR"):
 		client = SSRClient()
@@ -232,6 +229,11 @@ if (__name__ == "__main__"):
 		sortMethod = SORT_METHOD,
 		proxyType = PROXY_TYPE
 	)
+
+	if (options.import_file and CONFIG_LOAD_MODE == 0):
+		IMPORT_FILENAME = options.import_file
+		sc.importAndExport(IMPORT_FILENAME)
+		sys.exit(0)
 
 	configs = []
 	if (CONFIG_LOAD_MODE == 1):

@@ -10,6 +10,7 @@ logger = logging.getLogger("Sub")
 
 from SSRSpeed.Result.uploadResult import pushToServer
 from SSRSpeed.Utils.sorter import Sorter
+from SSRSpeed.Result.exporters.exporter_wps import ExporterWps
 
 from config import config
 
@@ -61,6 +62,12 @@ class ExportResult(object):
 		sorter = Sorter()
 		result = sorter.sortResult(result,sortMethod)
 		self.__exportAsPng(result)
+
+	def exportWpsResult(self, result, exportType = 0):
+		if not exportType:
+			result = self.__exportAsJson(result)
+		epwps = ExporterWps(result)
+		epwps.export()
 
 	def __getMaxWidth(self,result):
 		font = self.__font
@@ -357,4 +364,5 @@ class ExportResult(object):
 			f.writelines(json.dumps(result,sort_keys=True,indent=4,separators=(',',':')))
 			f.close()
 		logger.info("Result exported as %s" % filename)
+		return result
 

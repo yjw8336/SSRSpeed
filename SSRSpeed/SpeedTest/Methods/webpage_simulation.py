@@ -56,6 +56,7 @@ class WpsTask(AbstractTask):
 
 	def execute(self):
 		logger.debug("Thread {} started.Url: {}.".format(threading.current_thread().ident, self.url))
+		logger.info("Testing Url : {}".format(self.url))
 		res = {
 			"url": self.url,
 			"retCode": 0,

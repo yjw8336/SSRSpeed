@@ -166,9 +166,12 @@ class SSRSpeedCore(object):
 
 	def __exportResult(self,split = 0,exportType= 0):
 		er = ExportResult()
-		er.setColors(self.colors)
 		er.setTimeUsed(self.__timeStampStop - self.__timeStampStart)
-		er.export(self.__results,split,exportType,self.sortMethod)
+		if self.testMode == "WEB_PAGE_SIMULATION":
+			er.exportWpsResult(self.__results, exportType)
+		else:
+			er.setColors(self.colors)
+			er.export(self.__results,split,exportType,self.sortMethod)
 
 
 

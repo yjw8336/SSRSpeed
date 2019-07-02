@@ -1,8 +1,8 @@
 #coding:utf-8
 
 config = {
-	"VERSION":"2.5.1-pre_alpha",
-	"WEB_API_VERSION":"0.4.4-pre_alpha",
+	"VERSION":"2.5.1-alpha",
+	"WEB_API_VERSION":"0.4.4-alpha",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
 	"excludeRemarks":[
@@ -91,7 +91,7 @@ config = {
 		]
 	},
 	"webPageSimulation":{
-		"maxThread": 1,
+		"maxThread": 4,
 		"urls":[
 			"https://www.google.com.hk",
 			"https://www.youtube.com",

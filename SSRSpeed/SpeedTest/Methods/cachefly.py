@@ -11,7 +11,10 @@ def pingtcptest(host,port):
 	suc=0
 	fac=0
 	_list = []
-	while (fac < 3 or (suc != 0 and fac + suc < 10)):
+	while True:
+		if fac >= 3 or (suc != 0 and fac + suc >= 10):
+			break
+	#	logger.debug("fac: {}, suc: {}".format(fac, suc))
 		try:
 			s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			st=time.time()
@@ -40,7 +43,9 @@ def pinggoogletest(address,port=1080):
 	suc=0
 	fac=0
 	_list = []
-	while (fac < 3 or (suc != 0 and fac + suc < 10)):
+	while True:
+		if fac >= 3 or (suc != 0 and fac + suc >= 10):
+			break
 		try:
 			s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			s.settimeout(3)

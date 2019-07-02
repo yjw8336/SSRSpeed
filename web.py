@@ -175,6 +175,8 @@ if (__name__ == "__main__"):
 			item.addHandler(fileHandler)
 			item.addHandler(consoleHandler)
 
+	logger.info("SSRSpeed {}, Web Api Version {}".format(config["VERSION"], config["WEB_API_VERSION"]))
+
 	if (logger.level == logging.DEBUG):
 		logger.debug("Program running in debug mode")
 
