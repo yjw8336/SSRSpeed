@@ -26,6 +26,8 @@ resLock = threading.Lock()
 tasklist = queue.Queue(maxsize=15)
 
 def startWebPageSimulationTest(localHost, localPort):
+	while len(results):
+		results.pop()
 	logger.info("Start web page simulation test.")
 	logger.info("Proxy {}:{}".format(localHost, localPort))
 	proxies = {
@@ -45,7 +47,7 @@ def startWebPageSimulationTest(localHost, localPort):
 		tasklist.put(task)
 	
 	threadPool.join()
-	return results
+	return copy.deepcopy(results)
 
 
 class WpsTask(AbstractTask):

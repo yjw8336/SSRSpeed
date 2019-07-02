@@ -1,8 +1,8 @@
 #coding:utf-8
 
 config = {
-	"VERSION":"2.5.1-alpha",
-	"WEB_API_VERSION":"0.4.4-alpha",
+	"VERSION":"2.5.1-pre_beta",
+	"WEB_API_VERSION":"0.4.4-pre_beta",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
 	"excludeRemarks":[
@@ -96,7 +96,8 @@ config = {
 			"https://www.google.com.hk",
 			"https://www.youtube.com",
 			"https://www.bing.com",
-			"https://www.github.com"
+			"https://www.github.com",
+			"https://www.microsoft.com"
 		],
 		"cnUrls":[
 			"https://www.baidu.com",
