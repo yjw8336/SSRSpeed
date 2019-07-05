@@ -11,7 +11,12 @@ logger = logging.getLogger("Sub")
 
 class ExporterWps(object):
 	def __init__(self, result):
-		self.__results = result
+		newRes = []
+		for item in result:
+			item["geoIP"]["inbound"]["address"] = "*.*.*.*"
+			item["geoIP"]["outbound"]["address"] = "*.*.*.*"
+			newRes.append(item)
+		self.__results = newRes
 
 	def export(self):
 		nowTime = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
