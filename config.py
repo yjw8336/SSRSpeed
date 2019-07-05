@@ -1,8 +1,8 @@
 #coding:utf-8
 
 config = {
-	"VERSION":"2.4.10",
-	"WEB_API_VERSION":"0.4.3",
+	"VERSION":"2.5.1",
+	"WEB_API_VERSION":"0.4.4",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
 	"excludeRemarks":[
@@ -87,7 +87,22 @@ config = {
 				"link":"https://dl.google.com/dl/android/studio/install/3.4.1.0/android-studio-ide-183.5522156-windows.exe",
 				"fileSize":971,	#File size,MBytes
 				"tag":"Google"
-			}		
+			}
+		]
+	},
+	"webPageSimulation":{
+		"maxThread": 4,
+		"urls":[
+			"https://www.google.com.hk",
+			"https://www.youtube.com",
+			"https://www.bing.com",
+			"https://www.github.com",
+			"https://www.microsoft.com"
+		],
+		"cnUrls":[
+			"https://www.baidu.com",
+			"https://www.weibo.com",
+			"https://www.qq.com"
 		]
 	}
 }

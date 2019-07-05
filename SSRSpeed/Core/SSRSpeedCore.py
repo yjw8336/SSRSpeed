@@ -38,6 +38,8 @@ class SSRSpeedCore(object):
 		self.subscriptionUrl = ""
 		self.configFile = ""
 		
+		self.__timeStampStart = -1
+		self.__timeStampStop = -1
 		self.__client = None
 		self.__parser = None
 		self.__stc = None
@@ -72,15 +74,28 @@ class SSRSpeedCore(object):
 			self.__parser.cleanConfigs()
 			self.__parser.addConfigs(configs)
 
+	def consoleReadSubscription(self, url):
+		if (self.__parser):
+			self.__parser.readSubscriptionConfig(url)
+
+	def consoleReadFileConfigs(self, filename):
+		if (self.__parser):
+			self.__parser.readGuiConfig(filename)
+
+
 	def startTest(self):
+		self.__timeStampStart = time.time()
 		self.__stc = SpeedTestCore(self.__parser,self.__client,self.testMethod)
 		self.__status = "running"
 		if (self.testMode == "TCP_PING"):
 			self.__stc.tcpingOnly()
 		elif(self.testMode == "ALL"):
 			self.__stc.fullTest()
+		elif (self.testMode == "WEB_PAGE_SIMULATION"):
+			self.__stc.webPageSimulation()
 		self.__status = "stopped"
 		self.__results = self.__stc.getResult()
+		self.__timeStampStop = time.time()
 		self.__exportResult()
 
 	def __getParserByProxyType(self,proxyType):
@@ -151,8 +166,12 @@ class SSRSpeedCore(object):
 
 	def __exportResult(self,split = 0,exportType= 0):
 		er = ExportResult()
-		er.setColors(self.colors)
-		er.export(self.__results,split,exportType,self.sortMethod)
+		er.setTimeUsed(self.__timeStampStop - self.__timeStampStart)
+		if self.testMode == "WEB_PAGE_SIMULATION":
+			er.exportWpsResult(self.__results, exportType)
+		else:
+			er.setColors(self.colors)
+			er.export(self.__results,split,exportType,self.sortMethod)
 
 
 

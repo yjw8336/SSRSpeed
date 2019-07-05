@@ -22,6 +22,8 @@ from SSRSpeed.Utils.ConfigParser.ShadowsocksRParser import ShadowsocksRParser as
 from SSRSpeed.Utils.ConfigParser.V2RayParser import V2RayParser
 from SSRSpeed.Utils.RequirementCheck.RequireCheck import RequirementCheck
 
+from SSRSpeed.Core.SSRSpeedCore import SSRSpeedCore
+
 from config import config
 
 if (not os.path.exists("./logs/")):
@@ -48,6 +50,8 @@ if (__name__ == "__main__"):
 	if (pfInfo == "Unknown"):
 		logger.critical("Your system does not supported.Please contact developer.")
 		sys.exit(1)
+
+	
 
 	DEBUG = False
 	CONFIG_LOAD_MODE = 0 #0 for import result,1 for guiconfig,2 for subscription url
@@ -102,11 +106,16 @@ if (__name__ == "__main__"):
 			item.addHandler(fileHandler)
 			item.addHandler(consoleHandler)
 
+	logger.info("SSRSpeed {}, Web Api Version {}".format(config["VERSION"], config["WEB_API_VERSION"]))
+
 	if (logger.level == logging.DEBUG):
 		logger.debug("Program running in debug mode")
 
-	rc = RequirementCheck()
-	rc.check()
+	if not options.skip_requirements_check:
+		rc = RequirementCheck()
+		rc.check()
+	else:
+		logger.warn("Requirements check skipped.")
 
 	if (options.proxy_type):
 		if (options.proxy_type.lower() == "ss"):
@@ -132,6 +141,8 @@ if (__name__ == "__main__"):
 		TEST_MODE = "TCP_PING"
 	elif(options.test_mode == "all"):
 		TEST_MODE = "ALL"
+	elif (options.test_mode == "wps"):
+		TEST_MODE = "WEB_PAGE_SIMULATION"
 	else:
 		logger.critical("Invalid test mode : %s" % options.test_mode)
 		sys.exit(1)
@@ -194,13 +205,7 @@ if (__name__ == "__main__"):
 		else:
 			logger.error("Sort method %s not support." % sm)
 
-	if (options.import_file and CONFIG_LOAD_MODE == 0):
-		IMPORT_FILENAME = options.import_file
-		er = ExportResult()
-		er.setColors(RESULT_IMAGE_COLOR)
-		er.export(importResult.importResult(IMPORT_FILENAME),SPLIT_CNT,1,SORT_METHOD)
-		sys.exit(0)
-
+	'''
 	if (PROXY_TYPE == "SSR"):
 		client = SSRClient()
 		uConfigParser = SSRParser()
@@ -214,21 +219,46 @@ if (__name__ == "__main__"):
 	elif(PROXY_TYPE == "V2RAY"):
 		client = V2RayClient()
 		uConfigParser = V2RayParser()
+	'''
 
+	sc = SSRSpeedCore()
+	sc.webSetup(
+		testMode = TEST_MODE,
+		testMethod = TEST_METHOD,
+		colors = RESULT_IMAGE_COLOR,
+		sortMethod = SORT_METHOD,
+		proxyType = PROXY_TYPE
+	)
+
+	if (options.import_file and CONFIG_LOAD_MODE == 0):
+		IMPORT_FILENAME = options.import_file
+		sc.importAndExport(IMPORT_FILENAME)
+		sys.exit(0)
+
+	configs = []
 	if (CONFIG_LOAD_MODE == 1):
-		uConfigParser.readGuiConfig(CONFIG_FILENAME)
+		sc.consoleReadFileConfigs(CONFIG_FILENAME)
 	else:
-		uConfigParser.readSubscriptionConfig(CONFIG_URL)
-	uConfigParser.excludeNode([],[],config["excludeRemarks"])
-	uConfigParser.filterNode(FILTER_KEYWORD,FILTER_GROUP_KRYWORD,FILTER_REMARK_KEYWORD)
-	uConfigParser.excludeNode(EXCLUDE_KEYWORD,EXCLUDE_GROUP_KEYWORD,EXCLUDE_REMARK_KEWORD)
-	uConfigParser.printNode()
-	logger.info("{} node(s) will be test.".format(len(uConfigParser.getAllConfig())))
+		sc.consoleReadSubscription(CONFIG_URL)
 
+	sc.filterNodes(
+		FILTER_KEYWORD,
+		FILTER_GROUP_KRYWORD,
+		FILTER_REMARK_KEYWORD,
+		EXCLUDE_KEYWORD,
+		EXCLUDE_GROUP_KEYWORD,
+		EXCLUDE_REMARK_KEWORD
+	)
+	sc.cleanResults()
+
+	'''
 	if (TEST_MODE == "TCP_PING"):
 		logger.info("Test mode : tcp ping only.")
+	elif (TEST_MODE == "WEB_PAGE_SIMULATION"):
+		logger.info("Test mode : Web page simulation.")
 	else:
 		logger.info("Test mode : speed and tcp ping.\nTest method : %s." % TEST_METHOD)
+	'''
 
 	if (not SKIP_COMFIRMATION):
 		ans = input("Before the test please confirm the nodes,Ctrl-C to exit. (Y/N)")
@@ -236,6 +266,8 @@ if (__name__ == "__main__"):
 			pass
 		else:
 			sys.exit(0)
+	
+	sc.startTest()
 
 	'''
 		{
@@ -247,6 +279,8 @@ if (__name__ == "__main__"):
 			"dspeed":10214441 #Bytes
 		}
 	'''
+
+	'''
 	Result = []
 	stc = SpeedTestCore(uConfigParser,client,TEST_METHOD)
 	if (TEST_MODE == "ALL"):
@@ -255,9 +289,13 @@ if (__name__ == "__main__"):
 	elif (TEST_MODE == "TCP_PING"):
 		stc.tcpingOnly()
 		Result = stc.getResult()
+	elif (TEST_MODE == "WEB_PAGE_SIMULATION"):
+		stc.webPageSimulation()
+		Result = stc.getResult()
 
 	er = ExportResult()
 	er.setColors(RESULT_IMAGE_COLOR)
 	er.export(Result,SPLIT_CNT,0,SORT_METHOD)
+	'''
 
 

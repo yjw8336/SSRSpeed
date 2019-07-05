@@ -72,24 +72,42 @@ class RequirementCheck(object):
 	def __linuxCheckLibsodium(self):
 		logger.info("Checking libsodium.")
 		if (checkPlatform() == "MacOS"):
-			logger.warn("MacOS does not support detection of libsodium, please ensure that libsodium is installed.")
-			return True
-		try:
-			process = subprocess.Popen("ldconfig -p | grep libsodium",shell=True,stdout=subprocess.PIPE)
+		#	logger.warn("MacOS does not support detection of libsodium, please ensure that libsodium is installed.")
 			try:
-				out = process.communicate(timeout=15)[0]
-			except subprocess.TimeoutExpired:
-				process.terminate()
-				out, errs = process.communicate()
-				logger.exception(out.decode("utf-8") + errs.decode("utf-8"))
+				process = subprocess.Popen("brew info libsodium", shell=True, stdout=subprocess.PIPE)
+				try:
+					out = process.communicate(timeout=15)[0]
+				except subprocess.TimeoutExpired:
+					process.terminate()
+					out, errs = process.communicate()
+					logger.exception(out.decode("utf-8") + errs.decode("utf-8"))
+					return False
+				logger.debug("brew info libsodium : {}".format(out))
+				if "Not installed\n" in out.decode("utf-8"):
+					logger.error("Libsodium not found.")
+					return False
+				return True
+			except:
+				logger.exception("")
 				return False
-			logger.debug("ldconfig : {}".format(out))
-			if ("libsodium" not in out.decode("utf-8")):
+		#	return True
+		else:
+			try:
+				process = subprocess.Popen("ldconfig -p | grep libsodium",shell=True,stdout=subprocess.PIPE)
+				try:
+					out = process.communicate(timeout=15)[0]
+				except subprocess.TimeoutExpired:
+					process.terminate()
+					out, errs = process.communicate()
+					logger.exception(out.decode("utf-8") + errs.decode("utf-8"))
+					return False
+				logger.debug("ldconfig : {}".format(out))
+				if ("libsodium" not in out.decode("utf-8")):
+					return False
+				return True
+			except:
+				logger.exception("")
 				return False
-			return True
-		except:
-			logger.exception("")
-			return False
 
 	def __linuxCheckShadowsocks(self):
 		sslibev = False

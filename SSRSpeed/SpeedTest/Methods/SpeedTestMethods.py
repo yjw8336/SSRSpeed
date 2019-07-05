@@ -14,6 +14,7 @@ import SSRSpeed.SpeedTest.Methods.speedtestnet as speedtestnet
 import SSRSpeed.SpeedTest.Methods.fast as fast
 import SSRSpeed.SpeedTest.Methods.cachefly as cachefly
 import SSRSpeed.SpeedTest.Methods.stSocket as stSocket
+import SSRSpeed.SpeedTest.Methods.webpage_simulation as webpage_simulation
 
 from config import config
 
@@ -49,7 +50,6 @@ class SpeedTest(object):
 				logger.info(s.get_best_server())
 				logger.info("Testing Download...")
 				s.download()
-				socket.socket = DEFAULT_SOCKET
 				result = s.results.dict()
 				self.__initSocket()
 				return (result["download"] / 8,-1) #bits to bytes
@@ -61,7 +61,7 @@ class SpeedTest(object):
 				fast.setProxy(LOCAL_ADDRESS,LOCAL_PORT)
 				result = 0
 				result = fast.fast_com(verbose=True)
-				socket.socket = DEFAULT_SOCKET
+				self.__initSocket()
 				#print(result)
 				return (result,-1)
 			except:
@@ -73,9 +73,11 @@ class SpeedTest(object):
 			except:
 				logger.exception("")
 				return 0
-
 		else:
 			raise Exception("Invalid test method %s" % method)
+
+	def startWpsTest(self):
+		return webpage_simulation.startWebPageSimulationTest(LOCAL_ADDRESS, LOCAL_PORT)
 
 	def googlePing(self):
 		logger.info("Testing latency to google.")

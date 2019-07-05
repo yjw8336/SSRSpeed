@@ -2,13 +2,11 @@
 
 
 
-
-  
 <h1 align="center">
     <br>SSRSpeed
 </h1>
 <p align="center">
-Batch speed measuring tool based on Shadowsocks(R)
+Batch speed measuring tool based on Shadowsocks(R) and V2Ray
 </p>
 <p align="center">
    <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/NyanChanMeow/SSRSpeed.svg">
@@ -19,12 +17,11 @@ Batch speed measuring tool based on Shadowsocks(R)
 <p></p>
 
 ## Links
- - [中文文档](https://github.com/NyanChanMeow/SSRSpeed/blob/master/README_ZH_CN.md)
+ - <del>中文文档</del>
 
 ## Important Hint
-
-<font size=5 color=#FF0033>Before you publicly release your speed test results, be sure to ask the node owner if they agree to the release to avoid unnecessary disputes.</font>
-
+ - The test results are for reference only and do not guarantee versatility.
+ - Before you publicly release your speed test results, be sure to ask the node owner if they agree to the release to avoid unnecessary disputes.
  - SpeedTestNet and Fast.com is no longer supported.
  - MacOS has not found a suitable way to detect libsodium, so be sure to ensure that libsodium is installed before testing nodes that use encryption methods such as chacha20.
  - Shadowsocks-libev and Simple-Obfs are recommended to be installed using a compiled installation. It is known that the Shadowsocks-libev version in the Debian repository is too low to use some new encryption methods.
@@ -37,17 +34,12 @@ Batch speed measuring tool based on Shadowsocks(R)
 - Support batch import of configuration from GUI configuration file and SSPanel-v2, v3 subscription link.
 - Support for importing data from any Json export file and re-exporting files of the specified format.
 - Support WebUI
+- Support Web page simulation test(Result export as HTML from template.).
 
 ## Requirements 
 
 Universal dependency
-- Python >= 3.6
-- pillow
-- requests
-- pysocks
-- flask
-- flask-cors
-- pyyaml
+See `requirements.txt`
 
 Linux dependency
  - [libsodium](https://github.com/jedisct1/libsodium)
@@ -55,14 +47,18 @@ Linux dependency
  - [Simple-Obfs](https://github.com/shadowsocks/simple-obfs)
 
 ## Platform Support
+### Platform Tested
 1. Windows 10 x64
 2. Ubuntu 18.04 LTS
-3. MacOS
+
+### Theoretical Platform Support 
+The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
+
 
 ## Getting started
 
 ### Console Usage
-pip(pip3) install -r requirements.txt
+`pip(pip3) install -r requirements.txt`
 
     python .\main.py
     Usage: main.py [options] arg1 arg2...
@@ -96,13 +92,15 @@ pip(pip3) install -r requirements.txt
                             [speed,rspeed,ping,rping],default not sorted.
       -i IMPORT_FILE, --import=IMPORT_FILE
                             Import test result from json file and export it.
+      --skip-requirements-check
+                            Skip requirements check.
       --debug               Run program in debug mode.
 
 
 Example usage :
-- python main.py -c gui-config.json --include 韩国 --include-remark Azure --include-group YoYu
-- python main.py -u https://my.yoyutrans.com/subscriptionlink --include 香港 Azure --include-group YoYu --exclude Azure
-- python main.py -u https://my.yoyutrans.com/subscriptionlink -t ss
+- `python main.py -c gui-config.json --include 韩国 --include-remark Azure --include-group YoYu`
+- `python main.py -u https://my.yoyutrans.com/subscriptionlink --include 香港 Azure --include-group YoYu --exclude Azure`
+- `python main.py -u https://my.yoyutrans.com/subscriptionlink -t ss`
 
 The parameter priority is as follows:
 
@@ -113,10 +111,12 @@ The parameter priority is as follows:
 > --exclude > --exclude-group > --exclude-remark
 > The above sequence indicates that node filtering will be performed in descending order of priority.
 
-### Web UI
+### Web UI Usage
 
-    python web.py
-    You can now access the WebUI through http://127.0.0.1:10870 
+```
+python web.py
+You can now access the WebUI through http://127.0.0.1:10870 
+```
 
 ## Modify the speed source of Socket mode
   -  Just modify the **link**, **size** attribute in the object with the tag "Default" and the tag "Google", where "link" is the download source and "size" is the file corresponding to the download source. Size (MBytes)
@@ -204,7 +204,8 @@ Response (No Configs) => "no configs"
 |Mode|Remark|
 |:-:|:-:|
 |TCP_PING|Only tcp ping, no speed test|
-|ALL|Full test|
+|WEB_PAGE_SIMULATION|Web page simulation test|
+|ALL|Full speed test (exclude web page simulation)|
 
  - Test Methods
 
