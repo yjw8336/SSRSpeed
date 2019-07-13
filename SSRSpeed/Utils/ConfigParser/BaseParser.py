@@ -46,7 +46,20 @@ class BaseParser(object):
 
 	def __checkInList(self,item,_list):
 		for _item in _list:
-			if (_item["group"] == item["group"] and _item["remarks"] == item["remarks"]):
+			server1 = item.get("server", "")
+			server2 = _item.get("server", "")
+			port1 = item.get("server_port", item.get("port", 0))
+			port2 = _item.get("server_port", _item.get("port", 0))
+			if server1 and server2 and port1 and port2:
+				if server1 == server2 and port1 == port2:
+					logger.warn("{} - {} ({}:{}) already in list.".format(
+						item.get("group", "N/A"),
+						item.get("remarks", "N/A"),
+						item.get("server", "Server EMPTY"),
+						item.get("server_port", item.get("port", 0))
+					))
+					return True
+			else:
 				return True
 		return False
 
