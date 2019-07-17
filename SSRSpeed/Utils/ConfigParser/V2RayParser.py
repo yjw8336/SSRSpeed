@@ -116,12 +116,12 @@ class V2RayParser(BaseParser):
 	def readGuiConfig(self,filename):
 		pv2rc = ParserV2RayClash()
 		v2rnp = ParserV2RayN()
-		rawGuiConfigs = pv2rc.parseGuiConfig(filename)
+		rawGuiConfigs = v2rnp.parseGuiConfig(filename)
 		if (rawGuiConfigs == False):
-			logger.info("Not Clash Config.")
-			rawGuiConfigs = v2rnp.parseGuiConfig(filename)
+			logger.info("Not V2RayN Config.")
+			rawGuiConfigs = pv2rc.parseGuiConfig(filename)
 			if (rawGuiConfigs == False):
-				logger.info("Not V2RayN Config.")
+				logger.info("Not Clash Config.")
 				logger.critical("Gui config parse failed.")
 				rawGuiConfigs = []
 
