@@ -2,6 +2,7 @@
 
 
 
+
 <h1 align="center">
     <br>SSRSpeed
 </h1>
@@ -72,7 +73,7 @@ The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
       -m TEST_METHOD, --method=TEST_METHOD
                             Select test method in [speedtestnet,fast,socket].
       -M TEST_MODE, --mode=TEST_MODE
-                            Select test mode in [all,pingonly].
+                            Select test mode in [all,pingonly,wps].
       --include             Filter nodes by group and remarks using keyword.
       --include-remark      Filter nodes by remarks using keyword.
       --include-group       Filter nodes by group name using keyword.
@@ -137,6 +138,7 @@ The interfaces encapsulated in web.py are as follows:
 |/getversion | GET | Get backend version information|
 |/status|GET|Get backend status|
 |/readsubscriptions|POST|Get subscriptions|
+|/readfileconfig|POST|Upload configuration file |
 |/getcolors|GET|Get the color configuration owned by the backend|
 |/start|POST|Start the test, note that this is a **block request**, will return "done" after the test is completed, **will not have any response**|
 |/getresults|GET|Get the current test result. If the "/start" is blocked, if you need to get the result in real time, you should poll the interface, but the time should not be less than 1s, preventing the backend from taking too much performance impact test.
@@ -168,6 +170,22 @@ Response (Success) => [
 Response (running) => "running" 
 Response (Invalid URL) => "invalid url"
 ~~~~
+
+ - /readfileconfig The parameters and examples required to request this interface are returned as follows:
+~~~~
+POST => {
+	file: file,
+	"proxyType" : "Proxy Type"
+}
+Response (Success) => [
+	{
+	"Basic Config"
+	}
+]
+Response (running) => "running" 
+Response (Invalid File) => "File type not allowed"
+~~~~
+
  - /getcolors The interface is requested without any parameters. The return example after the request is successful is as follows:
 ~~~~
 [

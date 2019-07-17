@@ -10,6 +10,7 @@ import logging
 
 from flask import Flask,request,redirect#,render_template
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 from SSRSpeed.Utils.RequirementCheck.RequireCheck import RequirementCheck
 from SSRSpeed.Utils.checkPlatform import checkPlatform
@@ -21,6 +22,9 @@ import SSRSpeed.Core.Shell.ConsoleWeb as ShellWebServer
 
 from SSRSpeed.Result.exportResult import ExportResult
 import SSRSpeed.Result.importResult as importResult
+
+from SSRSpeed.types.errors.webapi.error_file_not_allowed import FileNotAllowed
+from SSRSpeed.types.errors.webapi.error_file_common import WebFileCommonError
 
 from config import config
 
@@ -45,12 +49,16 @@ consoleHandler.setFormatter(formatter)
 
 TEMPLATE_FOLDER = "./resources/webui/templates"
 STATIC_FOLDER = "./resources/webui/statics"
+UPLOAD_FOLDER = "./tmp/uploads"
+ALLOWED_EXTENSIONS = set(["json", "yml"])
 
 app = Flask(__name__,
 	template_folder=TEMPLATE_FOLDER,
 	static_folder=STATIC_FOLDER,
 	static_url_path=""
-	)
+)
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 CORS(app)
 sc = None
 
@@ -102,6 +110,31 @@ def readSubscriptions():
 		if (not subscriptionUrl):
 			return "invalid url."
 		return json.dumps(sc.webReadSubscription(subscriptionUrl,proxyType))
+
+def check_file_allowed(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@app.route("/readfileconfig", methods=["POST"])
+def readFileConfig():
+	if request.method == "POST":
+		if (sc.webGetStatus() == "running"):
+			return 'running'
+		ufile = request.files["file"]
+		data = getPostData()
+		proxyType = data.get("proxyType","SSR")
+		if ufile:
+			if check_file_allowed(ufile.filename):
+				filename = secure_filename(ufile.filename)
+				tmpFilename = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+				ufile.save(tmpFilename)
+				logger.info("Tmp config file saved as {}".format(tmpFilename))
+				return json.dumps(sc.webReadFileConfigs(tmpFilename, proxyType))
+			else:
+				logger.error("Disallowed file {}".format(ufile.filename))
+				return FileNotAllowed.errMsg
+		else:
+			logger.error("File upload failed or unknown error.")
+			return WebFileCommonError.errMsg
 
 @app.route("/getcolors",methods=["GET"])
 def getColors():
@@ -188,5 +221,8 @@ if (__name__ == "__main__"):
 
 	sc = SSRSpeedCore()
 	sc.webMode = True
+	if not os.path.exists(UPLOAD_FOLDER):
+		logger.warn("Upload folder {} not found, creating.".format(UPLOAD_FOLDER))
+		os.makedirs(UPLOAD_FOLDER)
 	app.run(host=options.listen,port=int(options.port),debug=DEBUG,threaded=True)
 

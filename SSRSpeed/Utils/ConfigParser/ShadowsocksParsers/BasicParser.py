@@ -76,15 +76,31 @@ class ParserShadowsocksBasic(object):
 		logger.info("Read {} config(s).".format(len(self.__configList)))
 		return self.__configList
 
+	def __getSsdGroup(self, ssdSubs, subUrl):
+		if len(ssdSubs) == 0 or subUrl == "":
+			return "N/A"
+		for item in ssdSubs:
+			if item.get("url", "") == subUrl:
+				return item.get("airport", "N/A")
+		return "N/A"
+
 	def parseGuiConfig(self,filename):
+		shadowsocksdConf = False
+		ssdSubs = []
 		with open(filename,"r",encoding="utf-8") as f:
 			try:
-				configs = json.load(f)["configs"]
-			except:
-				logger.exception("Not ShadowsocksBasic file.")
-				f.close()
+				fullConf = json.load(f)
+				if fullConf.__contains__("subscriptions"):
+					shadowsocksdConf = True
+					ssdSubs = fullConf["subscriptions"]
+				configs = fullConf["configs"]
+			except json.decoder.JSONDecodeError:
 				return False
-			f.close()
+			except:
+				logger.exception("Not Shadowsocks configuration file.")
+				return []
+			finally:
+				f.close()
 			for item in configs:
 				_dict = self.__getShadowsocksBaseConfig()
 				_dict["server"] = item["server"]
@@ -95,10 +111,13 @@ class ParserShadowsocksBasic(object):
 				_dict["plugin_opts"] = item.get("plugin_opts","")
 				_dict["plugin_args"] = item.get("plugin_args","")
 				_dict["remarks"] = item.get("remarks",item["server"])
-				_dict["group"] = item.get("group","N/A")
+				if not shadowsocksdConf:
+					_dict["group"] = item.get("group","N/A")
+				else:
+					_dict["group"] = self.__getSsdGroup(ssdSubs, item.get("subscription_url", ""))
 				_dict["fast_open"] = False
 				self.__configList.append(_dict)
 			f.close()
-		logger.info("Read {} config(s).".format(len(self.__configList)))
+		logger.info("Read {} node(s).".format(len(self.__configList)))
 		return self.__configList
 

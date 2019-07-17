@@ -38,6 +38,6 @@ class ParserShadowsocksD(object):
 		return self.__configList
 
 	def parseGuiConfig(self,filename):
-		logger.critical("ShadowsocksD Gui config will be support soon.")
-		return False
+		# In BasicParser.py
+		raise AttributeError("'parseGuiConfig' built-in 'BasicParser.py' with basic shadowsocks parser.")
 

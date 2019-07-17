@@ -40,16 +40,16 @@ class ShadowsocksParser(BaseParser):
 		logger.info("Read %d node(s)" % len(self._configList))
 	
 	def readGuiConfig(self,filename):
-		logger.info("Try Shadowsocks Clash Parser.")
-		pssc = ParserShadowsocksClash(self._getShadowsocksBaseConfig())
-		cfg = pssc.parseGuiConfig(filename)
+		logger.info("Try Shadowsocks Basic or ShadowsocksD Parser.")
+		pssb = ParserShadowsocksBasic(self._getShadowsocksBaseConfig())
+		cfg = pssb.parseGuiConfig(filename)
 		if (cfg == False):
-			logger.info("Not Clash Configs")
-			logger.info("Try Shadowsocks Basic or ShadowsocksD Parser.")
-			pssb = ParserShadowsocksBasic(self._getShadowsocksBaseConfig())
-			cfg = pssb.parseGuiConfig(filename)
+			logger.info("Not ShadowsocksBasic or ShadowsocksD Config.")
+			logger.info("Try Shadowsocks Clash Parser.")
+			pssc = ParserShadowsocksClash(self._getShadowsocksBaseConfig())
+			cfg = pssc.parseGuiConfig(filename)
 			if (cfg == False):
-				logger.info("Not ShadowsocksBasic or ShadowsocksD Config.")
+				logger.info("Not Clash Configs")
 				cfg = []
 				logger.critical("Unspport config file.")
 		self._configList = cfg
