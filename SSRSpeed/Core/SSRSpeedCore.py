@@ -59,6 +59,13 @@ class SSRSpeedCore(object):
 			parser.readSubscriptionConfig(url)
 			return parser.getAllConfig()
 		return []
+
+	def webReadFileConfigs(self, filename, proxyType):
+		parser = self.__getParserByProxyType(proxyType)
+		if parser:
+			parser.readGuiConfig(filename)
+			return parser.getAllConfig()
+		return []
 	
 	def webSetup(self,**kwargs):
 		self.testMethod = kwargs.get("testMethod","SOCKET")
