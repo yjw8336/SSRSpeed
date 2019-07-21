@@ -38,6 +38,9 @@ class BaseParser(object):
 	def _parseLink(self,link):
 		return {}
 
+	def parse_single_link(self, link):
+		return self._parseLink(link)
+
 	def _getLocalConfig(self):
 		return (LOCAL_ADDRESS,LOCAL_PORT)
 	
@@ -130,6 +133,8 @@ class BaseParser(object):
 					if (self.__checkInList(item,_list)):continue
 					if ((kw not in item["group"]) and (kw not in item["remarks"])):
 						_list.append(item)
+					else:
+						logger.debug("Excluded {} - {}".format(item["group"], item["remarks"]))
 				self._configList = _list
 		self.__excludeGroup(gkwl)
 		self.__excludeRemark(rkwl)
