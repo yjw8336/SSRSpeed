@@ -16,6 +16,10 @@ class ShadowsocksParser(BaseParser):
 	def __init__(self):
 		super(ShadowsocksParser,self).__init__()
 
+	def _parseLink(self, link):
+		pssb = ParserShadowsocksBasic(self._getShadowsocksBaseConfig())
+		return pssb.parseSubsConfig([link])[0]
+
 	def readSubscriptionConfig(self,url):
 		header = {
 			"User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
