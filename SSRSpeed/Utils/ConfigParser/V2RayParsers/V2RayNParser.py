@@ -27,6 +27,8 @@ class ParserV2RayN(object):
 			aid = int(_conf["aid"])
 			net = _conf["net"]
 			group = "N/A"
+			path = ""
+			host = ""
 			if (cfgVersion == "2"):
 				host = _conf.get("host","") # http host,web socket host,h2 host,quic encrypt method
 				path = _conf.get("path","") #Websocket path, http path, quic encrypt key
