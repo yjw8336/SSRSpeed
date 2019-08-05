@@ -8,7 +8,7 @@ logger = logging.getLogger("Sub")
 
 from . import BaseParser
 from .shadowsocks_parsers import ParserShadowsocksBasic, ParserShadowsocksClash, ParserShadowsocksD
-import SSRSpeed.Utils.b64plus as b64plus
+from ..utils import b64plus
 
 class ShadowsocksParser(BaseParser):
 	def __init__(self):

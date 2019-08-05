@@ -4,7 +4,7 @@ import json
 import urllib.parse
 from flask import request
 
-from SSRSpeed.Utils.Web.parseqsplus import parse_qs_plus
+from .parseqsplus import parse_qs_plus
 
 def getPostData():
 	#print(request.content_type)

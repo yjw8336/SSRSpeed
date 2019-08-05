@@ -9,7 +9,7 @@ logger = logging.getLogger("Sub")
 from . import BaseParser
 from .v2ray_parsers import ParserV2RayClash, ParserV2RayN, ParserV2RayQuantumult
 from .base_configs import V2RayBaseConfigs
-import SSRSpeed.Utils.b64plus as b64plus
+from ..utils import b64plus
 
 class V2RayParser(BaseParser):
 	def __init__(self):

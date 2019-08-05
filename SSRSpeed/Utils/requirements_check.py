@@ -5,12 +5,11 @@ import sys
 import os
 import subprocess
 
-
-from SSRSpeed.Utils.checkPlatform import checkPlatform
+from .platform_check import platform_check
 
 logger = logging.getLogger("Sub")
 
-class RequirementCheck(object):
+class RequirementsCheck(object):
 	def __init__(self):
 		self.__winRequire = {
 			"Shadowsocks-libev":[
@@ -42,7 +41,7 @@ class RequirementCheck(object):
 		}
 
 	def check(self):
-		pfInfo = checkPlatform()
+		pfInfo = platform_check()
 		if (pfInfo == "Windows"):
 			self.__checks(self.__winRequire)
 		elif (pfInfo == "Linux" or pfInfo == "MacOS"):
@@ -71,7 +70,7 @@ class RequirementCheck(object):
 
 	def __linuxCheckLibsodium(self):
 		logger.info("Checking libsodium.")
-		if (checkPlatform() == "MacOS"):
+		if (platform_check() == "MacOS"):
 		#	logger.warn("MacOS does not support detection of libsodium, please ensure that libsodium is installed.")
 			try:
 				process = subprocess.Popen("brew info libsodium", shell=True, stdout=subprocess.PIPE)

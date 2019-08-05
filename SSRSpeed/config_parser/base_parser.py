@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger("Sub")
 
 
-import SSRSpeed.Utils.b64plus as b64plus
+from ..utils import b64plus
 from .base_configs import shadowsocks_get_config
 from config import config
 

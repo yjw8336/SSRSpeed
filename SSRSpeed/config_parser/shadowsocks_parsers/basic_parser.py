@@ -5,7 +5,7 @@ import json
 import urllib.parse
 import copy
 
-import SSRSpeed.Utils.b64plus as b64plus
+from ...utils import b64plus
 
 logger = logging.getLogger("Sub")
 

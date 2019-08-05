@@ -5,7 +5,7 @@ import logging
 import json
 logger = logging.getLogger("Sub")
 
-import SSRSpeed.Utils.b64plus as b64plus
+from ...utils import b64plus
 
 class ParserV2RayQuantumult(object):
 	def __init__(self):

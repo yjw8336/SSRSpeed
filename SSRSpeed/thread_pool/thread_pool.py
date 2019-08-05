@@ -3,7 +3,7 @@
 import threading
 import queue
 
-from SSRSpeed.ThreadPool.work_thread import WorkThread
+from .work_thread import WorkThread
 
 class ThreadPool:
 
