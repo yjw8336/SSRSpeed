@@ -6,11 +6,9 @@ import requests
 import json
 logger = logging.getLogger("Sub")
 
-from SSRSpeed.Utils.ConfigParser.BaseParser import BaseParser
-from SSRSpeed.Utils.ConfigParser.V2RayParsers.ClashParser import ParserV2RayClash
-from SSRSpeed.Utils.ConfigParser.V2RayParsers.V2RayNParser import ParserV2RayN
-from SSRSpeed.Utils.ConfigParser.V2RayParsers.QuantumultParser import ParserQuantumult
-import SSRSpeed.Utils.ConfigParser.BaseConfig.V2RayBaseConfig as V2RayConfig
+from . import BaseParser
+from .v2ray_parsers import ParserV2RayClash, ParserV2RayN, ParserV2RayQuantumult
+from .base_configs import V2RayBaseConfigs
 import SSRSpeed.Utils.b64plus as b64plus
 
 class V2RayParser(BaseParser):
@@ -18,7 +16,7 @@ class V2RayParser(BaseParser):
 		super(V2RayParser,self).__init__()
 
 	def __generateConfig(self,config):
-		_config = V2RayConfig.getConfig()
+		_config = V2RayBaseConfigs.get_config()
 
 		_config["inbounds"][0]["listen"] = self._getLocalConfig()[0]
 		_config["inbounds"][0]["port"] = self._getLocalConfig()[1]
@@ -34,24 +32,24 @@ class V2RayParser(BaseParser):
 		streamSettings["network"] = config["network"]
 		if (config["network"] == "tcp"):
 			if (config["type"] == "http"):
-				tcpSettings = V2RayConfig.getTcpSettingsObject()
+				tcpSettings = V2RayBaseConfigs.get_tcp_object()
 				tcpSettings["header"]["request"]["path"] = config["path"].split(",")
 				tcpSettings["header"]["request"]["headers"]["Host"] = config["host"].split(",")
 				streamSettings["tcpSettings"] = tcpSettings
 		elif (config["network"] == "ws"):
-			webSocketSettings = V2RayConfig.getWebSocketSettingsObject()
+			webSocketSettings = V2RayBaseConfigs.get_ws_object()
 			webSocketSettings["path"] = config["path"]
 			webSocketSettings["headers"]["Host"] = config["host"]
 			for h in config.get("headers",[]):
 				webSocketSettings["headers"][h["header"]] = h["value"]
 			streamSettings["wsSettings"] = webSocketSettings
 		elif(config["network"] == "h2"):
-			httpSettings = V2RayConfig.getHttpSettingsObject()
+			httpSettings = V2RayBaseConfigs.get_http_object()
 			httpSettings["path"] = config["path"]
 			httpSettings["host"] = config["host"].split(",")
 			streamSettings["httpSettings"] = httpSettings
 		elif(config["network"] == "quic"):
-			quicSettings = V2RayConfig.getQuicSettingsObject()
+			quicSettings = V2RayBaseConfigs.get_quic_object()
 			quicSettings["security"] = config["host"]
 			quicSettings["key"] = config["path"]
 			quicSettings["header"]["type"] = config["type"]
@@ -59,7 +57,7 @@ class V2RayParser(BaseParser):
 
 		streamSettings["security"] = config["tls"]
 		if (config["tls"] == "tls"):
-			tlsSettings = V2RayConfig.getTlsSettingsObject()
+			tlsSettings = V2RayBaseConfigs.get_tls_object()
 			tlsSettings["allowInsecure"] = True if (config.get("allowInsecure","false") == "true") else False
 			tlsSettings["serverName"] = config["tls-host"]
 			streamSettings["tlsSettings"] = tlsSettings
@@ -83,7 +81,7 @@ class V2RayParser(BaseParser):
 		pv2rn = ParserV2RayN()
 		cfg = pv2rn.parseSubsConfig(link)
 		if (not cfg):
-			pq = ParserQuantumult()
+			pq = ParserV2RayQuantumult()
 			cfg = pq.parseSubsConfig(link)
 		if (not cfg):
 			logger.error("Parse link {} failed.".format(link))

@@ -117,21 +117,29 @@ tlsSettingsObject = {
 	"serverName": ""
 }
 
-def getTlsSettingsObject():
-	return copy.deepcopy(tlsSettingsObject)
+class V2RayBaseConfigs:
 
-def getWebSocketSettingsObject():
-	return copy.deepcopy(webSocketSettingsObject)
+	@staticmethod
+	def get_tls_object():
+		return copy.deepcopy(tlsSettingsObject)
 
-def getHttpSettingsObject():
-	return copy.deepcopy(httpSettingsObject)
+	@staticmethod
+	def get_ws_object():
+		return copy.deepcopy(webSocketSettingsObject)
 
-def getTcpSettingsObject():
-	return copy.deepcopy(tcpSettingsObject)
+	@staticmethod
+	def get_http_object():
+		return copy.deepcopy(httpSettingsObject)
 
-def getQuicSettingsObject():
-	return copy.deepcopy(quicSettingsObject)
+	@staticmethod
+	def get_tcp_object():
+		return copy.deepcopy(tcpSettingsObject)
 
-def getConfig():
-	return copy.deepcopy(V2RayBaseConfig)
+	@staticmethod
+	def get_quic_object():
+		return copy.deepcopy(quicSettingsObject)
+
+	@staticmethod
+	def get_config():
+		return copy.deepcopy(V2RayBaseConfig)
 

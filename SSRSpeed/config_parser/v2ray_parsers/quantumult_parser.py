@@ -7,7 +7,7 @@ logger = logging.getLogger("Sub")
 
 import SSRSpeed.Utils.b64plus as b64plus
 
-class ParserQuantumult(object):
+class ParserV2RayQuantumult(object):
 	def __init__(self):
 		pass
 
@@ -91,6 +91,4 @@ class ParserQuantumult(object):
 			logger.exception("Parse {} failed.(Quantumult Method)".format(rawLink))
 			return None
 
-if (__name__ == "__main__"):
-	pa = ParserQuantumult()
 	
