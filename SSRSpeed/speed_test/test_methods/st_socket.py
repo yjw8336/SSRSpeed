@@ -20,7 +20,7 @@ consoleHandler.setFormatter(formatter)
 logger.addHandler(consoleHandler)
 """
 
-from SSRSpeed.Utils.IPGeo import parseLocation
+from ...utils.geo_ip import parseLocation
 from config import config
 
 MAX_THREAD = config["speedtestsocket"]["maxThread"]

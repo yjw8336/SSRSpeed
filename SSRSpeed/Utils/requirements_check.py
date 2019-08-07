@@ -5,7 +5,7 @@ import sys
 import os
 import subprocess
 
-from .platform_check import platform_check
+from .platform_check import check_platform
 
 logger = logging.getLogger("Sub")
 
@@ -41,7 +41,7 @@ class RequirementsCheck(object):
 		}
 
 	def check(self):
-		pfInfo = platform_check()
+		pfInfo = check_platform()
 		if (pfInfo == "Windows"):
 			self.__checks(self.__winRequire)
 		elif (pfInfo == "Linux" or pfInfo == "MacOS"):
@@ -70,7 +70,7 @@ class RequirementsCheck(object):
 
 	def __linuxCheckLibsodium(self):
 		logger.info("Checking libsodium.")
-		if (platform_check() == "MacOS"):
+		if (check_platform() == "MacOS"):
 		#	logger.warn("MacOS does not support detection of libsodium, please ensure that libsodium is installed.")
 			try:
 				process = subprocess.Popen("brew info libsodium", shell=True, stdout=subprocess.PIPE)

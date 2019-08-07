@@ -6,7 +6,7 @@ import socket
 import logging
 logger = logging.getLogger("Sub")
 
-def pingtcptest(host,port):
+def tcp_ping(host, port):
 	alt=0
 	suc=0
 	fac=0
@@ -30,7 +30,7 @@ def pingtcptest(host,port):
 			_list.append(0)
 			logger.warn("TCP Ping (%s,%d) Timeout %d times." % (host,port,fac))
 		#	print("TCP Ping Timeout %d times." % fac)
-		except Exception as err:
+		except Exception:
 			logger.exception("TCP Ping Exception:")
 			_list.append(0)
 			fac+=1
@@ -38,7 +38,7 @@ def pingtcptest(host,port):
 		return (0,0,_list)
 	return (alt/suc,suc/(suc+fac),_list)
 
-def pinggoogletest(address,port=1080):
+def google_ping(address, port=1080):
 	alt=0
 	suc=0
 	fac=0
@@ -66,7 +66,7 @@ def pinggoogletest(address,port=1080):
 			fac += 1
 			_list.append(0)
 			logger.warn("Google Ping Timeout %d times." % (fac))
-		except Exception as err:
+		except Exception:
 			logger.exception("Google Ping Exception:")
 			_list.append(0)
 			fac += 1
@@ -74,5 +74,3 @@ def pinggoogletest(address,port=1080):
 		return (0,0,_list)
 	return (alt/suc,suc/(suc+fac),_list)
 
-if (__name__ == "__main__"):
-	print(pingtcptest("127.0.0.2",80))

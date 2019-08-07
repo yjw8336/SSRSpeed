@@ -6,10 +6,10 @@ import time
 
 logger = logging.getLogger("Sub")
 
-from SSRSpeed.SpeedTest.Methods.SpeedTestMethods import SpeedTest
-from SSRSpeed.Utils.IPGeo import domain2ip, IPLoc
+from .test_methods import SpeedTestMethods
+from ..utils.geo_ip import domain2ip, parseLocation, IPLoc
 
-class SpeedTestCore(object):
+class SpeedTest(object):
 	def __init__(self,parser,client,method = "SOCKET"):
 		self.__parser = parser
 		self.__client = client
@@ -98,7 +98,7 @@ class SpeedTestCore(object):
 			"gPingLoss": self.__baseResult["gPingLoss"],
 			"rawGooglePingStatus": self.__baseResult["rawGooglePingStatus"]
 		}
-		st = SpeedTest()
+		st = SpeedTestMethods()
 		latencyTest = st.tcpPing(server, port)
 		res["loss"] = 1 - latencyTest[1]
 		res["ping"] = latencyTest[0]
@@ -140,7 +140,7 @@ class SpeedTestCore(object):
 			_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
 			_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
 			if (_item["gPing"] > 0 or outboundInfo[2] == "CN"):
-				st = SpeedTest()
+				st = SpeedTestMethods()
 				res = st.startWpsTest()
 				_item["webPageSimulation"]["results"] = res
 
@@ -231,7 +231,7 @@ class SpeedTestCore(object):
 				_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
 				if (_item["gPing"] > 0 or outboundInfo[2] == "CN"):
 			#	if (_item["gPing"] > 0):
-					st = SpeedTest()
+					st = SpeedTestMethods()
 					time.sleep(1)
 					testRes = st.startTest(self.__testMethod)
 					if (int(testRes[0]) == 0):

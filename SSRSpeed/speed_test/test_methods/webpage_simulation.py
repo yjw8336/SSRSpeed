@@ -7,9 +7,8 @@ import threading
 import queue
 import logging
 
-from SSRSpeed.ThreadPool.thread_pool import ThreadPool
-from SSRSpeed.ThreadPool.abstract_task import AbstractTask
-from SSRSpeed.Utils.IPGeo import parseLocation
+from ...thread_pool import ThreadPool, AbstractTask
+from ...utils.geo_ip import parseLocation
 
 logger = logging.getLogger("Sub")
 

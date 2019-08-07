@@ -10,9 +10,9 @@ import sys
 import logging
 logger = logging.getLogger("Sub")
 
-from SSRSpeed.Shadowsocks.ClientBase import Base
+from .base_client import BaseClient
 
-class V2Ray(Base):
+class V2Ray(BaseClient):
 	def __init__(self):
 		super(V2Ray,self).__init__()
 

@@ -10,11 +10,12 @@ import sys
 import logging
 logger = logging.getLogger("Sub")
 
-import SSRSpeed.SpeedTest.Methods.speedtestnet as speedtestnet
-import SSRSpeed.SpeedTest.Methods.fast as fast
-import SSRSpeed.SpeedTest.Methods.cachefly as cachefly
-import SSRSpeed.SpeedTest.Methods.stSocket as stSocket
-import SSRSpeed.SpeedTest.Methods.webpage_simulation as webpage_simulation
+from . import speedtestnet
+from . import fast
+from . import st_socket as stSocket
+from . import webpage_simulation
+#import SSRSpeed.SpeedTest.Methods.cachefly as cachefly
+from .ping import tcp_ping, google_ping
 
 from config import config
 
@@ -23,7 +24,7 @@ LOCAL_ADDRESS = config["localAddress"]
 LOCAL_PORT = config["localPort"]
 DEFAULT_SOCKET = socket.socket
 
-class SpeedTest(object):
+class SpeedTestMethods(object):
 	def __init__(self):
 		self.__initSocket()
 
@@ -81,11 +82,11 @@ class SpeedTest(object):
 
 	def googlePing(self):
 		logger.info("Testing latency to google.")
-		return cachefly.pinggoogletest(LOCAL_ADDRESS,LOCAL_PORT)
+		return google_ping(LOCAL_ADDRESS, LOCAL_PORT)
 
 	def tcpPing(self,server,port):
 		logger.info("Testing latency to server.")
-		return cachefly.pingtcptest(server,port)
+		return tcp_ping(server, port)
 
 #Old Code
 ''' 
@@ -147,12 +148,3 @@ class SpeedTest(object):
 			self.__progress(i,50)
 			time.sleep(0.25)
 '''
-
-
-if (__name__ == "__main__"):
-	st = SpeedTest()
-	#print(st.startTest("FAST")/1024/1024) #Fast Test Data : Speed in bytes/s
-	#print(st.startTest("CACHE_FLY")) #CacheFly Test Data : Speed in bytes/s
-	#print(st.startTest()) #Speed Test Data : Unknown
-	#print(st.googlePing()) #Data : ms
-	#print(st.tcpPing("114.114.114.114",53)) # Data : tunple (ping as s,data loss - 1)

@@ -4,7 +4,7 @@ import platform
 import logging
 logger = logging.getLogger("Sub")
 
-def platform_check():
+def check_platform():
 		tmp = platform.platform()
 		logger.info("Platform Info : {}".format(str(tmp)))
 		if ("Windows" in tmp):
