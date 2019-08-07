@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from SSRSpeed.types.errors.webapi.error_base import WebErrorBase
+from .error_base import WebErrorBase
 
 class FileNotAllowed(WebErrorBase):
 	errMsg = "File type not allowed"

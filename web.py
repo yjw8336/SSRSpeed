@@ -12,19 +12,17 @@ from flask import Flask,request,redirect#,render_template
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-from SSRSpeed.Utils.RequirementCheck.RequireCheck import RequirementCheck
-from SSRSpeed.Utils.checkPlatform import checkPlatform
+from ssrspeed.utils import RequirementsCheck, check_platform
+from ssrspeed.utils.web import getPostData
 
-from SSRSpeed.Utils.Web.getpostdata import getPostData
+from ssrspeed.core.ssrspeed_core import SSRSpeedCore
+from ssrspeed.shell import web_cli as console_cfg
 
-from SSRSpeed.Core.SSRSpeedCore import SSRSpeedCore
-import SSRSpeed.Core.Shell.ConsoleWeb as ShellWebServer
+from ssrspeed.result import ExportResult
+from ssrspeed.result import importResult
 
-from SSRSpeed.Result.exportResult import ExportResult
-import SSRSpeed.Result.importResult as importResult
-
-from SSRSpeed.types.errors.webapi.error_file_not_allowed import FileNotAllowed
-from SSRSpeed.types.errors.webapi.error_file_common import WebFileCommonError
+from ssrspeed.types.errors.webapi.error_file_not_allowed import FileNotAllowed
+from ssrspeed.types.errors.webapi.error_file_common import WebFileCommonError
 
 from config import config
 
@@ -173,14 +171,14 @@ def getResults():
 	return json.dumps(sc.webGetResults())
 
 if (__name__ == "__main__"):
-	pfInfo = checkPlatform()
+	pfInfo = check_platform()
 	if (pfInfo == "Unknown"):
 		logger.critical("Your system does not supported.Please contact developer.")
 		sys.exit(1)
 
 	DEBUG = False
 	
-	options,args = ShellWebServer.init(WEB_API_VERSION)
+	options,args = console_cfg.init(WEB_API_VERSION)
 
 	if (options.paolu):
 		for root, dirs, files in os.walk(".", topdown=False):
@@ -214,7 +212,7 @@ if (__name__ == "__main__"):
 		logger.debug("Program running in debug mode")
 
 	if not options.skip_requirements_check:
-		rc = RequirementCheck()
+		rc = RequirementsCheck()
 		rc.check()
 	else:
 		logger.warn("Requirements check skipped.")

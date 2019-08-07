@@ -5,24 +5,11 @@ import sys
 import os
 import logging
 
-from SSRSpeed.Shadowsocks.Shadowsocks import Shadowsocks as SSClient
-from SSRSpeed.Shadowsocks.ShadowsocksR import ShadowsocksR as SSRClient
-from SSRSpeed.Shadowsocks.V2Ray import V2Ray as V2RayClient
+from ssrspeed.shell import cli as cli_cfg
 
-import SSRSpeed.Core.Shell.Console as ShellConsole
+from ssrspeed.utils import check_platform, RequirementsCheck
 
-from SSRSpeed.SpeedTest.SpeedTestCore import SpeedTestCore
-
-from SSRSpeed.Result.exportResult import ExportResult
-import SSRSpeed.Result.importResult as importResult
-
-from SSRSpeed.Utils.checkPlatform import checkPlatform
-from SSRSpeed.Utils.ConfigParser.ShadowsocksParser import ShadowsocksParser as SSParser
-from SSRSpeed.Utils.ConfigParser.ShadowsocksRParser import ShadowsocksRParser as SSRParser
-from SSRSpeed.Utils.ConfigParser.V2RayParser import V2RayParser
-from SSRSpeed.Utils.RequirementCheck.RequireCheck import RequirementCheck
-
-from SSRSpeed.Core.SSRSpeedCore import SSRSpeedCore
+from ssrspeed.core import SSRSpeedCore
 
 from config import config
 
@@ -46,7 +33,7 @@ consoleHandler.setFormatter(formatter)
 VERSION = config["VERSION"]
 
 if (__name__ == "__main__"):
-	pfInfo = checkPlatform()
+	pfInfo = check_platform()
 	if (pfInfo == "Unknown"):
 		logger.critical("Your system does not supported.Please contact developer.")
 		sys.exit(1)
@@ -72,7 +59,7 @@ if (__name__ == "__main__"):
 	SKIP_COMFIRMATION = False
 	RESULT_IMAGE_COLOR = "origin"
 	
-	options,args = ShellConsole.init(VERSION)
+	options,args = cli_cfg.init(VERSION)
 
 	if (options.paolu):
 		for root, dirs, files in os.walk(".", topdown=False):
@@ -112,7 +99,7 @@ if (__name__ == "__main__"):
 		logger.debug("Program running in debug mode")
 
 	if not options.skip_requirements_check:
-		rc = RequirementCheck()
+		rc = RequirementsCheck()
 		rc.check()
 	else:
 		logger.warn("Requirements check skipped.")

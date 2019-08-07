@@ -9,20 +9,20 @@ import os
 
 logger = logging.getLogger("Sub")
 
-from SSRSpeed.Shadowsocks.Shadowsocks import Shadowsocks as SSClient
-from SSRSpeed.Shadowsocks.ShadowsocksR import ShadowsocksR as SSRClient
-from SSRSpeed.Shadowsocks.V2Ray import V2Ray as V2RayClient
+from ..client_launcher import ShadowsocksClient as SSClient
+from ..client_launcher import ShadowsocksRClient as SSRClient
+from ..client_launcher import V2RayClient
 
-from SSRSpeed.Utils.ConfigParser.ShadowsocksParser import ShadowsocksParser as SSParser
-from SSRSpeed.Utils.ConfigParser.ShadowsocksRParser import ShadowsocksRParser as SSRParser
-from SSRSpeed.Utils.ConfigParser.V2RayParser import V2RayParser
+from ..config_parser import ShadowsocksParser as SSParser
+from ..config_parser import ShadowsocksRParser as SSRParser
+from ..config_parser import V2RayParser
 
-from SSRSpeed.Result.exportResult import ExportResult
-import SSRSpeed.Result.importResult as importResult
+from ..result import ExportResult
+from ..result import importResult
+from ..result import Sorter
 
-from SSRSpeed.SpeedTest.SpeedTestCore import SpeedTestCore
-from SSRSpeed.Utils.checkPlatform import checkPlatform
-from SSRSpeed.Utils.sorter import Sorter
+from ..speed_test import SpeedTest
+from ..utils import check_platform
 
 from config import config
 
@@ -43,7 +43,7 @@ class SSRSpeedCore(object):
 		self.__client = None
 		self.__parser = None
 		self.__stc = None
-		self.__platformInfo = checkPlatform()
+		self.__platformInfo = check_platform()
 		self.__results = []
 		self.__status = "stopped"
 	
@@ -92,7 +92,7 @@ class SSRSpeedCore(object):
 
 	def startTest(self):
 		self.__timeStampStart = time.time()
-		self.__stc = SpeedTestCore(self.__parser,self.__client,self.testMethod)
+		self.__stc = SpeedTest(self.__parser, self.__client,self.testMethod)
 		self.__status = "running"
 		if (self.testMode == "TCP_PING"):
 			self.__stc.tcpingOnly()
@@ -167,7 +167,7 @@ class SSRSpeedCore(object):
 		logger.info("{} node(s) will be test.".format(len(self.__parser.getAllConfig())))
 
 	def importAndExport(self,filename,split=0):
-		self.__results = importResult.importResult(filename)
+		self.__results = importResult(filename)
 		self.__exportResult(split,2)
 		self.__results = []
 

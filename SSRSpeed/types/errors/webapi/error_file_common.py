@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from SSRSpeed.types.errors.webapi.error_base import WebErrorBase
+from .error_base import WebErrorBase
 
 class WebFileCommonError(WebErrorBase):
 	errMsg = "Upload failed."
