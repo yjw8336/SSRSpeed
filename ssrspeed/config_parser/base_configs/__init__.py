@@ -2,3 +2,6 @@
 
 from .shadowsocks_base_config import getConfig as shadowsocks_get_config
 from .v2ray_base_config import V2RayBaseConfigs
+
+from .v2ray_base_config import V2RayBaseConfigs as v2ray_get_config
+

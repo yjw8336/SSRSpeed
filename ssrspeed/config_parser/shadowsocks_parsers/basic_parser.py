@@ -52,6 +52,9 @@ class ParserShadowsocksBasic(object):
 			return None
 		return _config
 
+	def parse_single_link(self, link):
+		return self.__parseLink(link)
+
 	def parseSubsConfig(self,links):
 		for link in links:
 			link = link.strip()

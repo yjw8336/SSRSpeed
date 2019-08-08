@@ -64,6 +64,9 @@ class ParserShadowsocksSIP002:
 
 		return _config
 
+	def parse_single_link(self, link):
+		return self.__parse_link(link)
+
 	def parseSubsConfig(self, links):
 		for link in links:
 			link = link.strip()
