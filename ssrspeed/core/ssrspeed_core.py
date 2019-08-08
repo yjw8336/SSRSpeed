@@ -1,5 +1,7 @@
 #coding:utf-8
 
+#TODO: Code Refactor Stage 2: Automatic identification of proxy types
+
 import time
 import logging
 import json

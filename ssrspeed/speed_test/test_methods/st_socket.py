@@ -1,5 +1,7 @@
 #coding:utf-8
 
+#TODO: rewrite with aiohttp
+
 import threading
 import socks
 import socket

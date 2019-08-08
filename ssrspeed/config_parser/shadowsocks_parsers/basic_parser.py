@@ -3,6 +3,7 @@
 import logging
 import json
 import urllib.parse
+import binascii
 import copy
 
 from ...utils import b64plus
@@ -17,54 +18,38 @@ class ParserShadowsocksBasic(object):
 	def __getShadowsocksBaseConfig(self):
 		return copy.deepcopy(self.__baseConfig)
 
-	def __parseLink(self,link):
+	def __parseLink(self, link):
 		_config = self.__getShadowsocksBaseConfig()
 
 		if (link[:5] != "ss://"):
 			logger.error("Unsupport link : %s" % link)
 			return None
-
-		urlData = urllib.parse.unquote(link)
-		urlResult = urllib.parse.urlparse(urlData)
-		decoded = b64plus.decode(urlResult.netloc[:urlResult.netloc.find("@")]).decode("utf-8")
-		method = decoded.split(":")[0]
-		password = decoded.split(":")[1]
-		addrPort = urlResult.netloc[urlResult.netloc.find("@") + 1:].split(":")
-		remarks = urlResult.fragment
-		if (len(addrPort) != 2):
-			return None
-		serverAddr = addrPort[0]
-		serverPort = int(addrPort[1])
-
-		queryResult = urlResult.query
-
-		plugin = ""
-		pluginOpts = ""
-		group = "N/A"
-
-		if ("group=" in queryResult):
-			index1 = queryResult.find("group=") + 6
-			index2 = queryResult.find("&",index1)
-			group = b64plus.decode(queryResult[index1:index2 if index2 != -1 else None]).decode("utf-8")
-		if ("plugin=" in queryResult):
-			index1 = queryResult.find("plugin=") + 7
-			index2 = queryResult.find(";",index1)
-			plugin = queryResult[index1:index2]
-			index3 = queryResult.find("&",index2)
-			pluginOpts = queryResult[index2 + 1:index3 if index3 != -1 else None]
-
-		_config["server"] = serverAddr
-		_config["server_port"] = serverPort
-		_config["method"] = method
-		_config["password"] = password
-		_config["group"] = group
-		_config["remarks"] = remarks
-		_config["plugin"] = plugin
-		_config["plugin_opts"] = pluginOpts
-
-		if (_config["remarks"] == ""):
+		
+		try:
+			decoded = b64plus.decode(link[5:]).decode("utf-8")
+			at_pos = decoded.rfind("@")
+			if at_pos == -1:
+				raise ValueError("Not shadowsocks basic link.")
+			mp = decoded[:at_pos]
+			ap = decoded[at_pos + 1:]
+			mp_pos = mp.find(":")
+			ap_pos = ap.find(":")
+			if mp_pos == -1 or ap_pos == -1:
+				raise ValueError("Not shadowsocks basic link.")
+			encryption = mp[:mp_pos]
+			password = mp[mp_pos + 1:]
+			server = ap[:ap_pos]
+			port = int(ap[ap_pos + 1:])
+			_config["server"] = server
+			_config["server_port"] = port
+			_config["method"] = encryption
+			_config["password"] = password
 			_config["remarks"] = _config["server"]
-
+		except binascii.Error:
+			raise ValueError("Not shadowsocks basic link.")
+		except:
+			logger.exception(f"Exception link {link}\n")
+			return None
 		return _config
 
 	def parseSubsConfig(self,links):

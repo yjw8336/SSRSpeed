@@ -7,7 +7,7 @@ import json
 logger = logging.getLogger("Sub")
 
 from . import BaseParser
-from .shadowsocks_parsers import ParserShadowsocksBasic, ParserShadowsocksClash, ParserShadowsocksD
+from .shadowsocks_parsers import ParserShadowsocksBasic, ParserShadowsocksClash, ParserShadowsocksD, ParserShadowsocksSIP002
 from ..utils import b64plus
 
 class ShadowsocksParser(BaseParser):
@@ -33,8 +33,13 @@ class ShadowsocksParser(BaseParser):
 			try:
 				logger.info("Try Shadowsocks Basic Parser.")
 				linksArr = (b64plus.decode(rep).decode("utf-8")).split("\n")
-				pssb = ParserShadowsocksBasic(self._getShadowsocksBaseConfig())
-				self._configList = pssb.parseSubsConfig(linksArr)
+				try:
+					pssb = ParserShadowsocksBasic(self._getShadowsocksBaseConfig())
+					self._configList = pssb.parseSubsConfig(linksArr)
+				except ValueError:
+					logger.info("Try Shadowsocks SIP002 Parser.")
+					pssip002 = ParserShadowsocksSIP002(self._getShadowsocksBaseConfig())
+					self._configList = pssip002.parseSubsConfig(linksArr)
 			except ValueError:
 				logger.info("Try Shadowsocks Clash Parser.")
 				pssc = ParserShadowsocksClash(self._getShadowsocksBaseConfig())
