@@ -10,7 +10,7 @@ class BaseNode:
 		self._config = config
 
 	def __repr__(self):
-		return f"Proxy Node <{self.__class__.__name__}>, Type: <{self.node_type}>"
+		return f"<{self.__class__.__name__}>, Proxy Type: {self.node_type}"
 
 	@property
 	def node_type(self) -> str:

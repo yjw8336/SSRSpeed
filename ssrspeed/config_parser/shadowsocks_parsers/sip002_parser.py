@@ -25,7 +25,7 @@ class ParserShadowsocksSIP002:
 		
 		url_unquoted = urllib.parse.unquote(link)
 		url_data = urllib.parse.urlparse(url_unquoted)
-		plugin_raw = url_data.query.lower()
+		plugin_raw = url_data.query
 		remarks = url_data.fragment
 		decoded = b64plus.decode(url_data.netloc[:url_data.netloc.find("@")]).decode("utf-8")
 		encryption = decoded.split(":")[0]
@@ -40,7 +40,7 @@ class ParserShadowsocksSIP002:
 		
 		plugin = ""
 		plugin_opts = ""
-		if ("plugin=" in plugin_raw):
+		if ("plugin=" in plugin_raw.lower()):
 			index1 = plugin_raw.find("plugin=") + 7
 			index2 = plugin_raw.find(";",index1)
 			plugin = plugin_raw[index1:index2]
@@ -52,14 +52,16 @@ class ParserShadowsocksSIP002:
 		_config["method"] = encryption
 		_config["password"] = password
 		_config["remarks"] = remarks if remarks else server
-		if plugin in ["simple-obfs", "obfs-local"]:
+		if plugin.lower() in ["simple-obfs", "obfs-local"]:
 			plugin = "simple-obfs"
 		elif not plugin:
+			plugin = ""
 			plugin_opts = ""
 		else:
 			logger.warn(f"Unsupport plugin: {plugin}")
 			return None
-	#	_config["plugin"] = plugin
+
+		_config["plugin"] = plugin
 		_config["plugin_opts"] = plugin_opts
 
 		return _config

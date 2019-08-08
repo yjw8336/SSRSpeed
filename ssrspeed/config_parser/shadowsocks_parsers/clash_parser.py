@@ -80,10 +80,10 @@ class ParserShadowsocksClash(object):
 			
 			self.__configList.append(_dict)
 
-		logger.debug("Read {} configs.".format(
-			len(self.__configList)
-			)
-		)
+	#	logger.debug("Read {} configs.".format(
+	#		len(self.__configList)
+	#		)
+	#	)
 
 	def parseSubsConfig(self,config):
 		try:
@@ -93,10 +93,10 @@ class ParserShadowsocksClash(object):
 			return False
 
 		self.__parseConfig(clashCfg)
-		logger.debug("Read {} configs.".format(
-			len(self.__configList)
-			)
-		)
+	#	logger.debug("Read {} configs.".format(
+	#		len(self.__configList)
+	#		)
+	#	)
 		return self.__configList
 
 	def parseGuiConfig(self,filename):

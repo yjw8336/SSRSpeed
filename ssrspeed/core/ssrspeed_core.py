@@ -1,6 +1,8 @@
 #coding:utf-8
 
-#TODO: Code Refactor Stage 2: Automatic identification of proxy types
+#Code Refactor Stage 2: Automatic identification of proxy types
+#Proxy Type Identification Done.
+#TODO: Automatic client selection.
 
 import time
 import logging
