@@ -106,7 +106,14 @@ def setOpts(parser):
 		dest="erfilter",
 		default = [],
 		help="Exclude nodes by remarks using keyword."
-		)
+	)
+	parser.add_option(
+		"--use-ssr-cs",
+		action="store_true",
+		dest="use_ssr_cs",
+		default = False,
+		help="Use ShadowsocksR-C# instead of ShadowsocksR-libev on Windows."
+	)
 	'''
 	parser.add_option(
 		"-t","--type",

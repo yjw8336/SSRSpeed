@@ -111,9 +111,9 @@ class SSRSpeedCore(object):
 			else:
 				raise ValueError("Subscription URL or configuration file must be set !")
 
-	def start_test(self):
+	def start_test(self, use_ssr_csharp=False):
 		self.__timeStampStart = time.time()
-		self.__stc = SpeedTest(self.__parser, self.testMethod)
+		self.__stc = SpeedTest(self.__parser, self.testMethod, use_ssr_csharp)
 		self.__status = "running"
 		if (self.testMode == "TCP_PING"):
 			self.__stc.tcpingOnly()

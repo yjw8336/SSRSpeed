@@ -153,6 +153,7 @@ def startTest():
 		colors =data.get("colors","origin")
 		sortMethod =data.get("sortMethod","")
 		testMode = data.get("testMode","")
+		use_ssr_cs = data.get("useSsrCSharp", False)
 		sc.web_setup(
 			testMode = testMode,
 			testMethod = testMethod,
@@ -161,7 +162,7 @@ def startTest():
 		)
 		sc.clean_result()
 		sc.web_set_configs(configs)
-		sc.start_test()
+		sc.start_test(use_ssr_cs)
 		return 'done'
 	return 'invalid method'
 

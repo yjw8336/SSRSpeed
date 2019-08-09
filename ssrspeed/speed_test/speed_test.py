@@ -11,8 +11,9 @@ from ..client_launcher import ShadowsocksClient, ShadowsocksRClient, V2RayClient
 from ..utils.geo_ip import domain2ip, parseLocation, IPLoc
 
 class SpeedTest(object):
-	def __init__(self, parser, method = "SOCKET"):
+	def __init__(self, parser, method = "SOCKET", use_ssr_cs = False):
 		self.__configs = parser.nodes
+		self.__use_ssr_cs = use_ssr_cs
 		self.__testMethod = method
 		self.__results = []
 		self.__current = {}
@@ -58,7 +59,8 @@ class SpeedTest(object):
 			return ShadowsocksClient()
 		elif client_type == "ShadowsocksR":
 			client = ShadowsocksRClient()
-		#	client.useSsrCSharp = True
+			if self.__use_ssr_cs:
+				client.useSsrCSharp = True
 			return client
 		elif client_type == "V2Ray":
 			return V2RayClient()

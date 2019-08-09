@@ -237,7 +237,7 @@ if (__name__ == "__main__"):
 		else:
 			sys.exit(0)
 	
-	sc.start_test()
+	sc.start_test(options.use_ssr_cs)
 
 
 
