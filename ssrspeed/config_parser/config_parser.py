@@ -2,6 +2,7 @@
 
 import binascii
 from copy import deepcopy
+import json
 import logging
 import requests
 
@@ -157,5 +158,43 @@ class UniversalParser:
 		self.__nodes = self.__parse_clash(rep)
 		
 	def read_gui_config(self, filename: str):
-		#TODO: Read configurations from file
-		pass
+		raw_data = ""
+		with open(filename, "r", encoding="utf-8") as f:
+			raw_data = f.read()
+			f.close()
+		try:
+			#Try Load as Json
+			data = json.loads(raw_data)
+			#Identification of proxy type
+			#Shadowsocks(D)
+			if (
+				"subscriptions" in data
+				or
+				(
+					"subscriptions" not in data
+					and "serverSubscribe" not in data
+					and "vmess" not in data
+				)
+			):
+				pssb = ParserShadowsocksBasic(self.__get_ss_base_config())
+				for cfg in pssb.parse_gui_data(data):
+					self.__nodes.append(NodeShadowsocks(cfg))
+			#ShadowsocksR
+			elif "serverSubscribe" in data:
+				pssr = ParserShadowsocksR(self.__get_ss_base_config())
+				for cfg in pssr.parse_gui_data(data):
+					self.__nodes.append(NodeShadowsocksR(cfg))
+			#V2RayN
+			elif "vmess" in data:
+				pv2n = ParserV2RayN()
+				cfgs = pv2n.parse_gui_data(data)
+				for cfg in cfgs:
+					self.__nodes.append(
+						NodeV2Ray(
+							V2RayBaseConfigs.generate_config(cfg, LOCAL_ADDRESS, LOCAL_PORT)
+						)
+					)
+		except json.JSONDecodeError:
+			#Try Load as Yaml
+			self.__nodes = self.__parse_clash(raw_data)
+

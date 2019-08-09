@@ -33,6 +33,7 @@ class ParserShadowsocksD(object):
 			_config["plugin_opts"] = server.get("plugin_options",defaultPluginOpts)
 			_config["group"] = group
 			_config["remarks"] = server.get("remarks",server["server"])
+			if not _config["remarks"]: _config["remarks"] = _config["server"]
 			self.__configList.append(_config)
 		logger.info("Read {} config(s).".format(len(self.__configList)))
 		return self.__configList

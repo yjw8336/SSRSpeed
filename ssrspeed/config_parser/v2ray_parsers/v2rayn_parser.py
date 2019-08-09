@@ -43,6 +43,7 @@ class ParserV2RayN(object):
 			tlsHost = host
 			security = _conf.get("security","auto")
 			remarks = _conf.get("ps",server)
+			remarks = remarks if remarks else server
 			logger.debug("Server : {},Port : {}, tls-host : {}, Path : {},Type : {},UUID : {},AlterId : {},Network : {},Host : {},TLS : {},Remarks : {},group={}".format(
 				server,
 				port,
@@ -75,18 +76,10 @@ class ParserV2RayN(object):
 		except:
 			logger.exception("Parse {} failed.(V2RayN Method)".format(rawLink))
 			return None
-
-	def parseGuiConfig(self,filename):
-		with open(filename,"r",encoding="utf-8") as f:
-			try:
-				config = json.load(f)
-			except:
-				logger.exception("Not V2RayN Config.")
-				f.close()
-				return False
-			f.close()
-		subList = config.get("subItem",[])
-		for item in config["vmess"]:
+	
+	def parse_gui_data(self, data: dict):
+		subList = data.get("subItem",[])
+		for item in data["vmess"]:
 			_dict = {
 				"server":item["address"],
 				"server_port":item["port"],
@@ -103,6 +96,7 @@ class ParserV2RayN(object):
 				"remarks":item.get("remarks",item["address"]),
 				"group":"N/A"
 			}
+			if not _dict["remarks"]: _dict["remarks"] = _dict["server"]
 			subId = _dict["subId"]
 			if (subId != ""):
 				for sub in subList:
@@ -110,4 +104,15 @@ class ParserV2RayN(object):
 						_dict["group"] = sub.get("remarks","N/A")
 			self.__decodedConfigs.append(_dict)
 		return self.__decodedConfigs
+	
+	def parseGuiConfig(self,filename):
+		with open(filename,"r",encoding="utf-8") as f:
+			try:
+				config = json.load(f)
+			except:
+				logger.exception("Not V2RayN Config.")
+				f.close()
+				return False
+			f.close()
+		return self.parse_gui_data(config)
 	

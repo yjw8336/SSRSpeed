@@ -56,4 +56,21 @@ class ParserShadowsocksR:
 			_config["remarks"] = _config["server"]
 		return _config
 
+	def parse_gui_data(self, data: dict):
+		results = []
+		for item in data["configs"]:
+			_dict = self.__get_base_config()
+			_dict["server"] = item["server"]
+			_dict["server_port"] = int(item["server_port"])
+			_dict["password"] = item["password"]
+			_dict["method"] = item["method"]
+			_dict["protocol"] = item.get("protocol","")
+			_dict["protocol_param"] = item.get("protocolparam","")
+			_dict["obfs"] = item.get("obfs","")
+			_dict["obfs_param"] = item.get("obfsparam","")
+			_dict["remarks"] = item.get("remarks", item["server"])
+			_dict["group"] = item.get("group","N/A")
+			if not _dict["remarks"]: _dict["remarks"] = _dict["server"]
+			results.append(_dict)
+
 

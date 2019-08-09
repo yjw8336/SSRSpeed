@@ -71,17 +71,38 @@ class ParserShadowsocksBasic(object):
 			if item.get("url", "") == subUrl:
 				return item.get("airport", "N/A")
 		return "N/A"
-
-	def parseGuiConfig(self,filename):
+	
+	def parse_gui_data(self, data: dict):
 		shadowsocksdConf = False
 		ssdSubs = []
+		if data.__contains__("subscriptions"):
+			shadowsocksdConf = True
+			ssdSubs = data["subscriptions"]
+		configs = data["configs"]
+		for item in configs:
+			_dict = self.__getShadowsocksBaseConfig()
+			_dict["server"] = item["server"]
+			_dict["server_port"] = int(item["server_port"])
+			_dict["password"] = item["password"]
+			_dict["method"] = item["method"]
+			_dict["plugin"] = item.get("plugin","")
+			_dict["plugin_opts"] = item.get("plugin_opts","")
+			_dict["plugin_args"] = item.get("plugin_args","")
+			_dict["remarks"] = item.get("remarks",item["server"])
+			if not _dict["remarks"]: _dict["remarks"] = _dict["server"]
+			if not shadowsocksdConf:
+				_dict["group"] = item.get("group","N/A")
+			else:
+				_dict["group"] = self.__getSsdGroup(ssdSubs, item.get("subscription_url", ""))
+			_dict["fast_open"] = False
+			self.__configList.append(_dict)
+		return self.__configList
+
+	def parseGuiConfig(self,filename):
 		with open(filename,"r",encoding="utf-8") as f:
 			try:
 				fullConf = json.load(f)
-				if fullConf.__contains__("subscriptions"):
-					shadowsocksdConf = True
-					ssdSubs = fullConf["subscriptions"]
-				configs = fullConf["configs"]
+				self.parse_gui_data(fullConf)
 			except json.decoder.JSONDecodeError:
 				return False
 			except:
@@ -89,23 +110,7 @@ class ParserShadowsocksBasic(object):
 				return []
 			finally:
 				f.close()
-			for item in configs:
-				_dict = self.__getShadowsocksBaseConfig()
-				_dict["server"] = item["server"]
-				_dict["server_port"] = int(item["server_port"])
-				_dict["password"] = item["password"]
-				_dict["method"] = item["method"]
-				_dict["plugin"] = item.get("plugin","")
-				_dict["plugin_opts"] = item.get("plugin_opts","")
-				_dict["plugin_args"] = item.get("plugin_args","")
-				_dict["remarks"] = item.get("remarks",item["server"])
-				if not shadowsocksdConf:
-					_dict["group"] = item.get("group","N/A")
-				else:
-					_dict["group"] = self.__getSsdGroup(ssdSubs, item.get("subscription_url", ""))
-				_dict["fast_open"] = False
-				self.__configList.append(_dict)
-			f.close()
+			
 		logger.info("Read {} node(s).".format(len(self.__configList)))
 		return self.__configList
 

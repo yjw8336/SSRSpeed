@@ -18,6 +18,7 @@ class ParserV2RayQuantumult(object):
 			linkSplited = linkDecoded.split(",")
 			remarks = linkSplited[0].split(" = ")[0]
 			server = linkSplited[1]
+			remarks = remarks if remarks else server
 			port = int(linkSplited[2])
 			security = linkSplited[3]
 			uuid = linkSplited[4].replace("\"","")

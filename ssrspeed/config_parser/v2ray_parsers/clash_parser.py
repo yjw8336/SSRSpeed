@@ -14,6 +14,7 @@ class ParserV2RayClash(object):
 	def __clashConfigConvert(self,clashCfg):
 		server = clashCfg["server"]
 		remarks = clashCfg.get("name",server)
+		remarks = remarks if remarks else server
 		group = "N/A"
 		port = int(clashCfg["port"])
 		uuid = clashCfg["uuid"]
