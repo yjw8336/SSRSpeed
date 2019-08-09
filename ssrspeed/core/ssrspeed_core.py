@@ -114,7 +114,7 @@ class SSRSpeedCore(object):
 		else:
 			raise ValueError("Subscription URL or configuration file must be set !")
 		
-		self.__parser.print_nodes()
+	#	self.__parser.print_nodes()
 
 	def __subscription_setup(
 		self,
@@ -162,7 +162,6 @@ class SSRSpeedCore(object):
 		}
 		return r
 	
-	#TODO: Filter node
 	'''
 	def __readNodes(self):
 		self.__parser.cleanConfigs()
@@ -173,15 +172,14 @@ class SSRSpeedCore(object):
 		else:
 			logger.critical("No config.")
 			sys.exit(1)
-	
-	def filterNodes(self,fk=[],fgk=[],frk=[],ek=[],egk=[],erk=[]):
-		self.__parser.excludeNode([],[],config["excludeRemarks"])
-		self.__parser.filterNode(fk,fgk,frk)
-		self.__parser.excludeNode(ek,egk,erk)
-	#	print(len(self.__parser.getAllConfig()))
-		self.__parser.printNode()
-		logger.info("{} node(s) will be test.".format(len(self.__parser.getAllConfig())))
 	'''
+
+	def filter_nodes(self, fk=[], fgk=[], frk=[], ek=[], egk=[], erk=[]):
+	#	self.__parser.excludeNode([],[],config["excludeRemarks"])
+		self.__parser.filter_nodes(fk, fgk, frk, ek, egk, erk)
+		self.__parser.print_nodes()
+		logger.info("{} node(s) will be test.".format(len(self.__parser.nodes)))
+	
 
 	def importAndExport(self,filename,split=0):
 		self.__results = importResult(filename)

@@ -12,6 +12,7 @@ from .shadowsocks_parsers import ParserShadowsocksBasic, ParserShadowsocksSIP002
 from .shadowsocksr_parsers import ParserShadowsocksR
 from .v2ray_parsers import ParserV2RayN, ParserV2RayQuantumult
 from .clash_parser import ParserClash
+from .node_filters import NodeFilter
 
 from config import config
 LOCAL_ADDRESS = config["localAddress"]
@@ -108,6 +109,11 @@ class UniversalParser:
 
 		return result
 	
+	def filter_nodes(self, fk=[], fgk=[], frk=[], ek=[], egk=[], erk=[]):
+		#TODO: Filter nodes by built-in list.
+		nf = NodeFilter()
+		self.__nodes = nf.filter_node(self.__nodes, fk, fgk, frk, ek, egk, erk)
+
 	def print_nodes(self):
 		for item in self.nodes:
 			logger.info(
@@ -116,8 +122,7 @@ class UniversalParser:
 					item.config["remarks"]
 				)
 			)
-		print(self.__nodes[0].config)
-		print(f"{len(self.__nodes)} node(s) in list.")
+		#logger.info(f"{len(self.__nodes)} node(s) in list.")
 
 	def read_subscription(self, url: str):
 		header = {

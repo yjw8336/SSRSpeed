@@ -229,8 +229,8 @@ if (__name__ == "__main__"):
 		)
 	#	sc.consoleReadSubscription(CONFIG_URL)
 
-	'''
-	sc.filterNodes(
+	
+	sc.filter_nodes(
 		FILTER_KEYWORD,
 		FILTER_GROUP_KRYWORD,
 		FILTER_REMARK_KEYWORD,
@@ -238,6 +238,7 @@ if (__name__ == "__main__"):
 		EXCLUDE_GROUP_KEYWORD,
 		EXCLUDE_REMARK_KEWORD
 	)
+	'''
 	sc.cleanResults()
 	'''
 
