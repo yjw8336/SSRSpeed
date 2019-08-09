@@ -2,7 +2,8 @@
 
 #Code Refactor Stage 2: Automatic identification of proxy types
 #Proxy Type Identification Done.
-#TODO: Automatic client selection.
+#Automatic client selection.
+#TODO: Full Test
 
 import time
 import logging
@@ -44,45 +45,52 @@ class SSRSpeedCore(object):
 		self.__stc = None
 		self.__results = []
 		self.__status = "stopped"
-
-	'''
-	def webGetColors(self):
+	
+	#Web Methods
+	def web_get_colors(self):
 		return config["exportResult"]["colors"]
 	
-	def webGetStatus(self):
+	def web_get_status(self):
 		return self.__status
 	
+	def __generate_web_configs(self, nodes: list) -> list:
+		result = []
+		for node in nodes:
+			result.append(
+				{
+					"type": node.node_type,
+					"config": node.config
+				}
+			)
+		return result
 	
-	def webReadSubscription(self,url,proxyType):
-		parser = self.__getParserByProxyType(proxyType)
+	def web_read_subscription(self, url:str) -> list:
+		parser = UniversalParser()
 		if (parser):
-			parser.readSubscriptionConfig(url)
-			return parser.getAllConfig()
+			parser.read_subscription(url)
+			return self.__generate_web_configs(parser.nodes)
 		return []
 
-	def webReadFileConfigs(self, filename, proxyType):
-		parser = self.__getParserByProxyType(proxyType)
+	def web_read_config_file(self, filename) -> list:
+		parser = UniversalParser()
 		if parser:
-			parser.readGuiConfig(filename)
-			return parser.getAllConfig()
+			parser.read_gui_config(filename)
+			return self.__generate_web_configs(parser.nodes)
 		return []
 	
-	def webSetup(self,**kwargs):
+	def web_setup(self,**kwargs):
 		self.testMethod = kwargs.get("testMethod","SOCKET")
-		self.proxyType = kwargs.get("proxyType","SSR")
 		self.colors = kwargs.get("colors","origin")
 		self.sortMethod = kwargs.get("sortMethod","")
 		self.testMode = kwargs.get("testMode","TCP_PING")
-		self.__parser = self.__getParserByProxyType(self.proxyType)
-		self.__client = self.__getClientByProxyType(self.proxyType)
-	
 
-	def webSetConfigs(self,configs):
+	def web_set_configs(self, configs: list):
 		if (self.__parser):
-			self.__parser.cleanConfigs()
-			self.__parser.addConfigs(configs)
-	'''
+			self.__parser.set_nodes(
+				UniversalParser.web_config_to_node(configs)
+			)
 	
+	#Console Methods
 	def console_setup(self,
 		test_mode: str,
 		test_method: str,

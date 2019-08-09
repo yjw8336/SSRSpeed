@@ -2,7 +2,7 @@
 
 config = {
 	"VERSION":"2.6.0-refacting",
-	"WEB_API_VERSION":"0.4.5",
+	"WEB_API_VERSION":"0.5.0",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
 	"excludeRemarks":[

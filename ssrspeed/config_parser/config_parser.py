@@ -27,12 +27,34 @@ class UniversalParser:
 		self.__nodes = []
 		self.__ss_base_cfg = shadowsocks_get_config(LOCAL_ADDRESS, LOCAL_PORT, TIMEOUT)
 
+	@staticmethod
+	def web_config_to_node(configs: list) -> list:
+		result = []
+		for config in configs:
+			_type = config.get("type", "N/A")
+			if _type == "Shadowsocks":
+				result.append(NodeShadowsocks(config["config"]))
+			elif _type == "ShadowsocksR":
+				result.append(NodeShadowsocksR(config["config"]))
+			elif _type == "V2Ray":
+				result.append(NodeV2Ray(config["config"]))
+			else:
+				logger.warn(f"Unknown node type: {_type}")
+		return result
+
 	@property
 	def nodes(self):
 		return deepcopy(self.__nodes)
 
 	def __get_ss_base_config(self):
 		return deepcopy(self.__ss_base_cfg)
+
+	def __clean_nodes(self):
+		self.__nodes.clear()
+
+	def set_nodes(self, nodes: list):
+		self.__clean_nodes()
+		self.__nodes = nodes
 
 	def parse_links(self, links: list):
 		#Single link parse

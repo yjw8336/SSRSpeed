@@ -62,7 +62,7 @@ sc = None
 
 @app.route("/",methods=["GET"])
 def index():
-	return redirect("https://web.绒布球.site/",301)
+	return redirect("https://web.绒布球.site/beta_version", 301)
 	#return render_template(
 	#	"index.html"
 	#	)
@@ -95,19 +95,19 @@ def getVersion():
 
 @app.route("/status",methods=["GET"])
 def status():
-	return sc.webGetStatus()
+	return sc.web_get_status()
 
 @app.route("/readsubscriptions",methods=["POST"])
 def readSubscriptions():
 	if (request.method == "POST"):
 		data = getPostData()
-		if (sc.webGetStatus() == "running"):
+		if (sc.web_get_status() == "running"):
 			return 'running'
 		subscriptionUrl = data.get("url","")
-		proxyType = data.get("proxyType","SSR")
+		#proxyType = data.get("proxyType","SSR")
 		if (not subscriptionUrl):
 			return "invalid url."
-		return json.dumps(sc.webReadSubscription(subscriptionUrl,proxyType))
+		return json.dumps(sc.web_read_subscription(subscriptionUrl))
 
 def check_file_allowed(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -115,18 +115,17 @@ def check_file_allowed(filename):
 @app.route("/readfileconfig", methods=["POST"])
 def readFileConfig():
 	if request.method == "POST":
-		if (sc.webGetStatus() == "running"):
+		if (sc.web_get_status() == "running"):
 			return 'running'
 		ufile = request.files["file"]
-		data = getPostData()
-		proxyType = data.get("proxyType","SSR")
+		#data = getPostData()
 		if ufile:
 			if check_file_allowed(ufile.filename):
 				filename = secure_filename(ufile.filename)
 				tmpFilename = os.path.join(app.config["UPLOAD_FOLDER"], filename)
 				ufile.save(tmpFilename)
 				logger.info("Tmp config file saved as {}".format(tmpFilename))
-				return json.dumps(sc.webReadFileConfigs(tmpFilename, proxyType))
+				return json.dumps(sc.web_read_config_file(tmpFilename))
 			else:
 				logger.error("Disallowed file {}".format(ufile.filename))
 				return FileNotAllowed.errMsg
@@ -136,39 +135,38 @@ def readFileConfig():
 
 @app.route("/getcolors",methods=["GET"])
 def getColors():
-	return json.dumps(sc.webGetColors())
+	return json.dumps(sc.web_get_colors())
 
 @app.route('/start',methods=["POST"])
 def startTest():
 	if (request.method == "POST"):
 		data = getPostData()
 	#	return "SUCCESS"
-		if (sc.webGetStatus() == "running"):
+		if (sc.web_get_status() == "running"):
 			return 'running'
 		configs = data.get("configs",[])
 		if (not configs):
 			return "No configs"
-		proxyType =data.get("proxyType","SSR")
+		#proxyType =data.get("proxyType","SSR")
 		testMethod =data.get("testMethod","SOCKET")
 		colors =data.get("colors","origin")
 		sortMethod =data.get("sortMethod","")
 		testMode = data.get("testMode","")
-		sc.webSetup(
+		sc.web_setup(
 			testMode = testMode,
 			testMethod = testMethod,
 			colors = colors,
-			sortMethod = sortMethod,
-			proxyType = proxyType
+			sortMethod = sortMethod
 		)
-		sc.cleanResults()
-		sc.webSetConfigs(configs)
-		sc.startTest()
+		sc.clean_result()
+		sc.web_set_configs(configs)
+		sc.start_test()
 		return 'done'
 	return 'invalid method'
 
 @app.route('/getresults')
 def getResults():
-	return json.dumps(sc.webGetResults())
+	return json.dumps(sc.web_get_results())
 
 if (__name__ == "__main__"):
 	pfInfo = check_platform()

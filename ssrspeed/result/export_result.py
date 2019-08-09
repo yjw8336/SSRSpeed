@@ -80,9 +80,9 @@ class ExportResult(object):
 			maxGroupWidth = max(maxGroupWidth,draw.textsize(group,font=font)[0])
 			maxRemarkWidth = max(maxRemarkWidth,draw.textsize(remark,font=font)[0])
 		return (maxGroupWidth + 10,maxRemarkWidth + 10)
-
+	
+	'''
 	def __deweighting(self,result):
-		#TODO: remove method
 		_result = []
 		for r in result:
 			isFound = False
@@ -98,6 +98,7 @@ class ExportResult(object):
 			if (not isFound):
 				_result.append(r)
 		return _result
+	'''
 
 	def __getBasePos(self, width, text):
 		font = self.__font
