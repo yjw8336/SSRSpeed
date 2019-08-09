@@ -172,6 +172,7 @@ class UniversalParser:
 			links = (b64plus.decode(rep).decode("utf-8")).split("\n")
 			logger.debug("Base64 decode success.")
 			self.__nodes = self.parse_links(links)
+			parsed = True
 		except binascii.Error:
 			logger.info("Base64 decode failed.")
 		if parsed: return
