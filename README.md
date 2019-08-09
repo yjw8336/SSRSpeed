@@ -36,6 +36,7 @@ Batch speed measuring tool based on Shadowsocks(R) and V2Ray
 - Support for importing data from any Json export file and re-exporting files of the specified format.
 - Support WebUI
 - Support Web page simulation test(Result export as HTML from template.).
+- Automatic identification of proxy types.
 
 ## Requirements 
 
@@ -80,14 +81,10 @@ The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
       --exclude             Exclude nodes by group and remarks using keyword.
       --exclude-group       Exclude nodes by group using keyword.
       --exclude-remark      Exclude nodes by remarks using keyword.
-      -t PROXY_TYPE, --type=PROXY_TYPE
-                            Select proxy type in [ssr,ss],default ssr.
+      --use-ssr-cs          Replace the ShadowsocksR-libev with the ShadowsocksR-C# (Only Windows)
       -y, --yes             Skip node list confirmation before test.
       -C RESULT_COLOR, --color=RESULT_COLOR
                         Set the colors when exporting images..
-      -s SPLIT_COUNT, --split=SPLIT_COUNT
-                            Set the number of nodes displayed in a single image
-                            when exporting images.
       -S SORT_METHOD, --sort=SORT_METHOD
                             Select sort method in
                             [speed,rspeed,ping,rping],default not sorted.
@@ -100,8 +97,8 @@ The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
 
 Example usage :
 - `python main.py -c gui-config.json --include 韩国 --include-remark Azure --include-group YoYu`
-- `python main.py -u https://my.yoyutrans.com/subscriptionlink --include 香港 Azure --include-group YoYu --exclude Azure`
-- `python main.py -u https://my.yoyutrans.com/subscriptionlink -t ss`
+- `python main.py -u https://home.yoyu.dev/subscriptionlink --include 香港 Azure --include-group YoYu --exclude Azure`
+- `python main.py -u https://home.yoyu.dev/subscriptionlink -t ss`
 
 The parameter priority is as follows:
 
@@ -159,12 +156,12 @@ stopped => Connected to the backend but no test is running
  - /readsubscriptions The parameters and examples required to request this interface are returned as follows:
 ~~~~
 POST => {
-	"url" : "subscription url",
-	"proxyType" : "Proxy Type"
+	"url" : "subscription url"
 }
 Response (Success) => [
 	{
-	"Basic Config"
+	"type": "Proxy type of this configuration.",
+	"config": {"Standard Configuration"}
 	}
 ]
 Response (running) => "running" 
@@ -174,12 +171,12 @@ Response (Invalid URL) => "invalid url"
  - /readfileconfig The parameters and examples required to request this interface are returned as follows:
 ~~~~
 POST => {
-	file: file,
-	"proxyType" : "Proxy Type"
+	file: file
 }
 Response (Success) => [
 	{
-	"Basic Config"
+	"type": "Proxy type of this configuration.",
+	"config": {"Standard Configuration"}
 	}
 ]
 Response (running) => "running" 
@@ -206,10 +203,10 @@ Response (Invalid File) => "File type not allowed"
 ~~~~
 POST => {
 	"testMethod" : "Test Method",
-	"proxyType" : "Proxy Type",
 	"testMode" : "Test Mode",
 	"colors" : "Color Name", //Ignorable
 	"sortMethod" : "Sort Method", //Ignorable
+	"useSsrCSharp": "bool", //Ignorable
 	"configs":[] //Standard configuration array
 }
 Response (Task Done) => "done"
@@ -233,14 +230,6 @@ Response (No Configs) => "no configs"
 |SPEED_TEST_NET|Speed Test Net speed test|
 |FAST|Fast.com speed test|
 
- - Proxy Types
-
- |Proxy|Client|Config Parser|
- |:-:|:-:|:-:|
- |SSR|ShadowsocksR-libev (Windows)<br>ShadowsocksR-Python (Linux and MacOS)|ShadowsocksR|
- |SSR-C#|ShadowsocksR-C# (Windows)<br>ShadowsocksR-Python (Linux and MacOS)|ShadowsocksR|
- |SS|Shadowsocks-libev (All Platform)|Shadowsocks \| ShadowsocksD \| Clash|
- |V2RAY|V2Ray-Core (All Platform)|V2RayN \| Quantumult \| Clash
 
 ## Developers
 - <del>Removed as requested by the developer</del>
