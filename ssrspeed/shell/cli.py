@@ -112,7 +112,7 @@ def setOpts(parser):
 		action="store_true",
 		dest="use_ssr_cs",
 		default = False,
-		help="Use ShadowsocksR-C# instead of ShadowsocksR-libev on Windows."
+		help="Replace the ShadowsocksR-libev with the ShadowsocksR-C# (Only Windows)."
 	)
 	'''
 	parser.add_option(
