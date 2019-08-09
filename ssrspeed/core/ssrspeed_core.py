@@ -17,9 +17,7 @@ from ..client_launcher import ShadowsocksClient as SSClient
 from ..client_launcher import ShadowsocksRClient as SSRClient
 from ..client_launcher import V2RayClient
 
-from ..config_parser import ShadowsocksParser as SSParser
-from ..config_parser import ShadowsocksRParser as SSRParser
-from ..config_parser import V2RayParser
+from ..config_parser import UniversalParser
 
 from ..result import ExportResult
 from ..result import importResult
@@ -45,7 +43,7 @@ class SSRSpeedCore(object):
 		self.__timeStampStart = -1
 		self.__timeStampStop = -1
 		self.__client = None
-		self.__parser = None
+		self.__parser = UniversalParser()
 		self.__stc = None
 		self.__platformInfo = check_platform()
 		self.__results = []
@@ -57,6 +55,7 @@ class SSRSpeedCore(object):
 	def webGetStatus(self):
 		return self.__status
 	
+	'''
 	def webReadSubscription(self,url,proxyType):
 		parser = self.__getParserByProxyType(proxyType)
 		if (parser):
@@ -79,6 +78,7 @@ class SSRSpeedCore(object):
 		self.testMode = kwargs.get("testMode","TCP_PING")
 		self.__parser = self.__getParserByProxyType(self.proxyType)
 		self.__client = self.__getClientByProxyType(self.proxyType)
+	
 
 	def webSetConfigs(self,configs):
 		if (self.__parser):
@@ -92,11 +92,41 @@ class SSRSpeedCore(object):
 	def consoleReadFileConfigs(self, filename):
 		if (self.__parser):
 			self.__parser.readGuiConfig(filename)
+	'''
+	
+	def console_setup(self,
+		test_mode: str,
+		test_method: str,
+		color: str = "origin",
+		sort_method: str = "",
+		url: str = "",
+		cfg_filename: str = ""
+	):
+		self.testMethod = test_method
+		self.testMode = test_mode
+		self.sortMethod = sort_method
+		self.colors = color
+		if cfg_filename:
+			pass
+			#TODO: Read configuration from config file.
+		elif url:
+			self.__subscription_setup(url)
+		else:
+			raise ValueError("Subscription URL or configuration file must be set !")
+		
+		self.__parser.print_nodes()
 
+	def __subscription_setup(
+		self,
+		url: str,
+
+	):
+		if self.__parser:
+			self.__parser.read_subscription(url)
 
 	def startTest(self):
 		self.__timeStampStart = time.time()
-		self.__stc = SpeedTest(self.__parser, self.__client,self.testMethod)
+		self.__stc = SpeedTest(self.__parser, self.testMethod)
 		self.__status = "running"
 		if (self.testMode == "TCP_PING"):
 			self.__stc.tcpingOnly()
@@ -108,26 +138,6 @@ class SSRSpeedCore(object):
 		self.__results = self.__stc.getResult()
 		self.__timeStampStop = time.time()
 		self.__exportResult()
-
-	def __getParserByProxyType(self,proxyType):
-		if (proxyType == "SSR" or proxyType == "SSR-C#"):
-			return SSRParser()
-		elif(proxyType == "SS"):
-			return SSParser()
-		elif(proxyType == "V2RAY"):
-			return V2RayParser()
-
-	def __getClientByProxyType(self,proxyType):
-		if (proxyType == "SSR"):
-			return SSRClient()
-		elif (proxyType == "SSR-C#"):
-			client = SSRClient()
-			client.useSsrCSharp = True
-			return client
-		elif(proxyType == "SS"):
-			return SSClient()
-		elif(proxyType == "V2RAY"):
-			return V2RayClient()
 
 	def cleanResults(self):
 		self.__results = []
@@ -152,6 +162,8 @@ class SSRSpeedCore(object):
 		}
 		return r
 	
+	#TODO: Filter node
+	'''
 	def __readNodes(self):
 		self.__parser.cleanConfigs()
 		if (self.configFile):
@@ -169,6 +181,7 @@ class SSRSpeedCore(object):
 	#	print(len(self.__parser.getAllConfig()))
 		self.__parser.printNode()
 		logger.info("{} node(s) will be test.".format(len(self.__parser.getAllConfig())))
+	'''
 
 	def importAndExport(self,filename,split=0):
 		self.__results = importResult(filename)

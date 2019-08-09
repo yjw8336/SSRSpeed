@@ -192,23 +192,9 @@ if (__name__ == "__main__"):
 		else:
 			logger.error("Sort method %s not support." % sm)
 
-	'''
-	if (PROXY_TYPE == "SSR"):
-		client = SSRClient()
-		uConfigParser = SSRParser()
-	elif (PROXY_TYPE == "SSR-C#"):
-		client = SSRClient()
-		client.useSsrCSharp = True
-		uConfigParser = SSRParser()
-	elif(PROXY_TYPE == "SS"):
-		client = SSClient()
-		uConfigParser = SSParser()
-	elif(PROXY_TYPE == "V2RAY"):
-		client = V2RayClient()
-		uConfigParser = V2RayParser()
-	'''
 
 	sc = SSRSpeedCore()
+	'''
 	sc.webSetup(
 		testMode = TEST_MODE,
 		testMethod = TEST_METHOD,
@@ -216,6 +202,7 @@ if (__name__ == "__main__"):
 		sortMethod = SORT_METHOD,
 		proxyType = PROXY_TYPE
 	)
+	'''
 
 	if (options.import_file and CONFIG_LOAD_MODE == 0):
 		IMPORT_FILENAME = options.import_file
@@ -224,10 +211,25 @@ if (__name__ == "__main__"):
 
 	configs = []
 	if (CONFIG_LOAD_MODE == 1):
-		sc.consoleReadFileConfigs(CONFIG_FILENAME)
+		sc.console_setup(
+			TEST_MODE,
+			TEST_METHOD,
+			RESULT_IMAGE_COLOR,
+			SORT_METHOD,
+			cfg_filename = CONFIG_FILENAME
+		)
+	#	sc.consoleReadFileConfigs(CONFIG_FILENAME)
 	else:
-		sc.consoleReadSubscription(CONFIG_URL)
+		sc.console_setup(
+			TEST_MODE,
+			TEST_METHOD,
+			RESULT_IMAGE_COLOR,
+			SORT_METHOD,
+			url = CONFIG_URL
+		)
+	#	sc.consoleReadSubscription(CONFIG_URL)
 
+	'''
 	sc.filterNodes(
 		FILTER_KEYWORD,
 		FILTER_GROUP_KRYWORD,
@@ -237,14 +239,6 @@ if (__name__ == "__main__"):
 		EXCLUDE_REMARK_KEWORD
 	)
 	sc.cleanResults()
-
-	'''
-	if (TEST_MODE == "TCP_PING"):
-		logger.info("Test mode : tcp ping only.")
-	elif (TEST_MODE == "WEB_PAGE_SIMULATION"):
-		logger.info("Test mode : Web page simulation.")
-	else:
-		logger.info("Test mode : speed and tcp ping.\nTest method : %s." % TEST_METHOD)
 	'''
 
 	if (not SKIP_COMFIRMATION):
@@ -256,33 +250,5 @@ if (__name__ == "__main__"):
 	
 	sc.startTest()
 
-	'''
-		{
-			"group":"",
-			"remarks":"",
-			"loss":0,
-			"ping":0.01,
-			"gping":0.01,
-			"dspeed":10214441 #Bytes
-		}
-	'''
-
-	'''
-	Result = []
-	stc = SpeedTestCore(uConfigParser,client,TEST_METHOD)
-	if (TEST_MODE == "ALL"):
-		stc.fullTest()
-		Result = stc.getResult()
-	elif (TEST_MODE == "TCP_PING"):
-		stc.tcpingOnly()
-		Result = stc.getResult()
-	elif (TEST_MODE == "WEB_PAGE_SIMULATION"):
-		stc.webPageSimulation()
-		Result = stc.getResult()
-
-	er = ExportResult()
-	er.setColors(RESULT_IMAGE_COLOR)
-	er.export(Result,SPLIT_CNT,0,SORT_METHOD)
-	'''
 
 

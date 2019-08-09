@@ -107,9 +107,19 @@ class UniversalParser:
 				)
 
 		return result
+	
+	def print_nodes(self):
+		for item in self.nodes:
+			logger.info(
+				"{} - {}".format(
+					item.config["group"],
+					item.config["remarks"]
+				)
+			)
+		print(self.__nodes[0].config)
+		print(f"{len(self.__nodes)} node(s) in list.")
 
-
-	def parse_subscription(self, url: str):
+	def read_subscription(self, url: str):
 		header = {
 			"User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
 		}

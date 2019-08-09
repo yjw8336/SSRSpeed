@@ -7,12 +7,12 @@ import time
 logger = logging.getLogger("Sub")
 
 from .test_methods import SpeedTestMethods
+from ..client_launcher import ShadowsocksClient, ShadowsocksRClient, V2RayClient
 from ..utils.geo_ip import domain2ip, parseLocation, IPLoc
 
 class SpeedTest(object):
-	def __init__(self,parser,client,method = "SOCKET"):
-		self.__parser = parser
-		self.__client = client
+	def __init__(self, parser, method = "SOCKET"):
+		self.__configs = parser.nodes
 		self.__testMethod = method
 		self.__results = []
 		self.__current = {}
@@ -46,6 +46,22 @@ class SpeedTest(object):
 
 	def __getBaseResult(self):
 		return copy.deepcopy(self.__baseResult)
+
+	def __get_next_config(self):
+		try:
+			return self.__configs.pop(0)
+		except IndexError:
+			return None
+	
+	def __get_client(self, client_type: str):
+		if client_type == "Shadowsocks":
+			return ShadowsocksClient()
+		elif client_type == "ShaodwsocksR":
+			return ShadowsocksRClient()
+		elif client_type == "V2Ray":
+			return V2RayClient()
+		else:
+			return None
 
 	def resetStatus(self):
 		self.__results = []
@@ -115,113 +131,38 @@ class SpeedTest(object):
 				logger.exception("")
 				pass
 		return res
-
-	def webPageSimulation(self):
-		logger.info("Test mode : Web Page Simulation")
+	
+	def __start_test(self, test_mode = "FULL"):
 		self.__results = []
-		config = self.__parser.getNextConfig()
-		while (True):
-			if (config == None):break
-			_item = self.__getBaseResult()
-			_item["group"] = config["group"]
-			_item["remarks"] = config["remarks"]
-			self.__current = _item
-			config["server_port"] = int(config["server_port"])
-			self.__client.startClient(config)
-			inboundInfo = self.__geoIPInbound(config)
-			_item["geoIP"]["inbound"]["address"] = "{}:{}".format(inboundInfo[0],config["server_port"])
-			_item["geoIP"]["inbound"]["info"] = inboundInfo[1]
-			pingResult = self.__tcpPing(config["server"], config["server_port"])
-			if (isinstance(pingResult, dict)):
-				for k in pingResult.keys():
-					_item[k] = pingResult[k]
-
-			outboundInfo = self.__geoIPOutbound()
-			_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
-			_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
-			if (_item["gPing"] > 0 or outboundInfo[2] == "CN"):
-				st = SpeedTestMethods()
-				res = st.startWpsTest()
-				_item["webPageSimulation"]["results"] = res
-
-			self.__client.stopClient()
-			self.__results.append(_item)
-			logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - [WebPageSimulation]".format
-				(
-					_item["group"],
-					_item["remarks"],
-					_item["loss"] * 100,
-					int(_item["ping"] * 1000),
-					_item["gPingLoss"] * 100,
-					int(_item["gPing"] * 1000)
-				)
-			)
-			config = self.__parser.getNextConfig()
-			time.sleep(1)
-		self.__current = {}
-
-	def tcpingOnly(self):
-		logger.info("Test mode : tcp ping only.")
-		self.__results = []
-		config = self.__parser.getNextConfig()
-		while (True):
-			if (config == None):break
-			_item = self.__getBaseResult()
-			_item["group"] = config["group"]
-			_item["remarks"] = config["remarks"]
-			self.__current = _item
-			config["server_port"] = int(config["server_port"])
-			self.__client.startClient(config)
-			inboundInfo = self.__geoIPInbound(config)
-			_item["geoIP"]["inbound"]["address"] = "{}:{}".format(inboundInfo[0],config["server_port"])
-			_item["geoIP"]["inbound"]["info"] = inboundInfo[1]
-			pingResult = self.__tcpPing(config["server"], config["server_port"])
-			if (isinstance(pingResult, dict)):
-				for k in pingResult.keys():
-					_item[k] = pingResult[k]
-		#	if (_item["gPing"] > 0):
-			outboundInfo = self.__geoIPOutbound()
-			_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
-			_item["geoIP"]["outbound"]["info"] = outboundInfo[1]	
-			self.__client.stopClient()
-			self.__results.append(_item)
-			logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}]".format
-				(
-					_item["group"],
-					_item["remarks"],
-					_item["loss"] * 100,
-					int(_item["ping"] * 1000),
-					_item["gPingLoss"] * 100,
-					int(_item["gPing"] * 1000)
-				)
-			)
-			config = self.__parser.getNextConfig()
-			time.sleep(1)
-		self.__current = {}
-
-	def fullTest(self):
-		logger.info("Test mode : speed and tcp ping.Test method : {}.".format(self.__testMethod))
-		self.__results = []
-		configs = self.__parser.getAllConfig()
-		totalConfCount = len(configs)
-		config = self.__parser.getNextConfig()
-		time.sleep(2)
-		curConfCount = 0
-		while(True):
-			if(not config):break
-			_item = self.__getBaseResult()
-			_item["group"] = config.get("group","N/A")
-			_item["remarks"] = config.get("remarks",config["server"])
-			config["server_port"] = int(config["server_port"])
-			self.__client.startClient(config)
-			curConfCount += 1
-			logger.info("Starting test for {} - {} [{}/{}]".format(_item["group"],_item["remarks"],curConfCount,totalConfCount))
-			self.__current = _item
-			inboundInfo = self.__geoIPInbound(config)
-			_item["geoIP"]["inbound"]["address"] = inboundInfo[0]
-			_item["geoIP"]["inbound"]["info"] = inboundInfo[1]
-			time.sleep(1)
+		total_nodes = len(self.__configs)
+		done_nodes = 0
+		node = self.__get_next_config()
+		while node:
+			done_nodes += 1
 			try:
+				config = node.config
+				logger.info(
+					"Starting test {group} - {remarks} [{cur}/{tol}]".format(
+						group = config["group"],
+						remarks = config["remarks"],
+						cur = done_nodes,
+						tol = total_nodes
+					)
+				)
+				client = self.__get_client(node.node_type)
+				if not client:
+					logger.warn(f"Unknown Node Type: {node.node_type}")
+					node = self.__get_next_config()
+					continue
+				_item = self.__getBaseResult()
+				_item["group"] = config["group"]
+				_item["remarks"] = config["remarks"]
+				self.__current = _item
+				config["server_port"] = int(config["server_port"])
+				client.startClient(config)
+				inboundInfo = self.__geoIPInbound(config)
+				_item["geoIP"]["inbound"]["address"] = "{}:{}".format(inboundInfo[0],config["server_port"])
+				_item["geoIP"]["inbound"]["info"] = inboundInfo[1]
 				pingResult = self.__tcpPing(config["server"], config["server_port"])
 				if (isinstance(pingResult, dict)):
 					for k in pingResult.keys():
@@ -229,54 +170,80 @@ class SpeedTest(object):
 				outboundInfo = self.__geoIPOutbound()
 				_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
 				_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
+
 				if (_item["gPing"] > 0 or outboundInfo[2] == "CN"):
-			#	if (_item["gPing"] > 0):
 					st = SpeedTestMethods()
-					time.sleep(1)
-					testRes = st.startTest(self.__testMethod)
-					if (int(testRes[0]) == 0):
-						logger.warn("Re-testing node.")
+					if test_mode == "WPS":
+						res = st.startWpsTest()
+						_item["webPageSimulation"]["results"] = res
+						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - [WebPageSimulation]".format
+							(
+								_item["group"],
+								_item["remarks"],
+								_item["loss"] * 100,
+								int(_item["ping"] * 1000),
+								_item["gPingLoss"] * 100,
+								int(_item["gPing"] * 1000)
+							)
+						)
+					elif test_mode == "PING":
+						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - [WebPageSimulation]".format
+							(
+								_item["group"],
+								_item["remarks"],
+								_item["loss"] * 100,
+								int(_item["ping"] * 1000),
+								_item["gPingLoss"] * 100,
+								int(_item["gPing"] * 1000)
+							)
+						)
+					elif test_mode == "FULL":
 						testRes = st.startTest(self.__testMethod)
-					_item["dspeed"] = testRes[0]
-					_item["maxDSpeed"] = testRes[1]
-					try:
-						_item["trafficUsed"] = testRes[3]
-						_item["rawSocketSpeed"] = testRes[2]
-					except:
-						pass	
+						if (int(testRes[0]) == 0):
+							logger.warn("Re-testing node.")
+							testRes = st.startTest(self.__testMethod)
+						_item["dspeed"] = testRes[0]
+						_item["maxDSpeed"] = testRes[1]
+						try:
+							_item["trafficUsed"] = testRes[3]
+							_item["rawSocketSpeed"] = testRes[2]
+						except:
+							pass
 
-			#		outboundInfo = self.__geoIPOutbound()
-			#		_item["geoIP"]["outbound"]["address"] = outboundInfo[0]
-			#		_item["geoIP"]["outbound"]["info"] = outboundInfo[1]
+						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - AvgSpeed: [{:.2f}MB/s] - MaxSpeed: [{:.2f}MB/s]".format
+							(
+								_item["group"],
+								_item["remarks"],
+								_item["loss"] * 100,
+								int(_item["ping"] * 1000),
+								_item["gPingLoss"] * 100,
+								int(_item["gPing"] * 1000),
+								_item["dspeed"] / 1024 / 1024,
+								_item["maxDSpeed"] / 1024 / 1024
+							)
+						)
+					else:
+						logger.error(f"Unknown Test Mode {test_mode}")
 
-					time.sleep(1)
-				self.__client.stopClient()
 				self.__results.append(_item)
-				logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - AvgSpeed: [{:.2f}MB/s] - MaxSpeed: [{:.2f}MB/s]".format
-					(
-						_item["group"],
-						_item["remarks"],
-						_item["loss"] * 100,
-						int(_item["ping"] * 1000),
-						_item["gPingLoss"] * 100,
-						int(_item["gPing"] * 1000),
-						_item["dspeed"] / 1024 / 1024,
-						_item["maxDSpeed"] / 1024 / 1024
-					)
-				)
-			#	logger.info(
-			#		"{} - {} - Loss:{}%% - TCP_Ping:{} - AvgSpeed:{:.2f}MB/s - MaxSpeed:{:.2f}MB/s".format(
-			#			_item["group"],
-			#			_item["remarks"],
-			#			_item["loss"] * 100,
-			#			int(_item["ping"] * 1000),
-			#			_item["dspeed"] / 1024 / 1024,
-			#			_item["maxDSpeed"] / 1024 / 1024
-			#			)
-			#		)
 			except Exception:
-				self.__client.stopClient()
-				logger.exception("")
-			config = self.__parser.getNextConfig()
+				logger.exception("\n")
+			finally:
+				client.stopClient()
+				node = self.__get_next_config()
+				time.sleep(1)
+
 		self.__current = {}
+
+	def webPageSimulation(self):
+		logger.info("Test mode : Web Page Simulation")
+		self.__start_test("WPS")
+
+	def tcpingOnly(self):
+		logger.info("Test mode : tcp ping only.")
+		self.__start_test("PING")
+
+	def fullTest(self):
+		logger.info("Test mode : speed and tcp ping.Test method : {}.".format(self.__testMethod))
+		self.__start_test("FULL")
 

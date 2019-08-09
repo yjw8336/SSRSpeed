@@ -73,6 +73,9 @@ def speedTestThread(link):
 			except socket.timeout:
 				logger.error("Receive data timeout.")
 				break
+			except ConnectionResetError:
+				logger.warn("Remote host closed connection.")
+				break
 			lxx = len(xx)
 		#	received += len(xx)
 			received += lxx

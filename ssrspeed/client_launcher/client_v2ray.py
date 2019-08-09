@@ -39,7 +39,7 @@ class V2Ray(BaseClient):
 					logger.critical("Your system does not supported.Please contact developer.")
 					sys.exit(1)
 		except FileNotFoundError:
-			logger.exception("")
+			#logger.exception("")
 			logger.error("V2Ray Core Not Found !")
 			sys.exit(1)
 
