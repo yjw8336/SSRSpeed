@@ -56,8 +56,10 @@ class SpeedTest(object):
 	def __get_client(self, client_type: str):
 		if client_type == "Shadowsocks":
 			return ShadowsocksClient()
-		elif client_type == "ShaodwsocksR":
-			return ShadowsocksRClient()
+		elif client_type == "ShadowsocksR":
+			client = ShadowsocksRClient()
+		#	client.useSsrCSharp = True
+			return client
 		elif client_type == "V2Ray":
 			return V2RayClient()
 		else:
@@ -229,7 +231,8 @@ class SpeedTest(object):
 			except Exception:
 				logger.exception("\n")
 			finally:
-				client.stopClient()
+				if client:
+					client.stopClient()
 				node = self.__get_next_config()
 				time.sleep(1)
 
