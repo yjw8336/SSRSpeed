@@ -24,7 +24,6 @@ class NodeFilter:
 		self.__filter_node(kwl, gkwl, rkwl)
 		self.__exclude_nodes(ekwl, egkwl, erkwl)
 		return self.__node_list
-		#TODO: Adapt to node list
 
 	def __check_in_list(self,item: dict,_list: list):
 		for _item in _list:

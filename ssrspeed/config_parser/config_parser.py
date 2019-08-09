@@ -110,7 +110,6 @@ class UniversalParser:
 		return result
 	
 	def filter_nodes(self, fk=[], fgk=[], frk=[], ek=[], egk=[], erk=[]):
-		#TODO: Filter nodes by built-in list.
 		nf = NodeFilter()
 		self.__nodes = nf.filter_node(self.__nodes, fk, fgk, frk, ek, egk, erk)
 
@@ -157,3 +156,6 @@ class UniversalParser:
 		#Try Clash Parser
 		self.__nodes = self.__parse_clash(rep)
 		
+	def read_gui_config(self, filename: str):
+		#TODO: Read configurations from file
+		pass

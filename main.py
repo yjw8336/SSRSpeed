@@ -6,9 +6,7 @@ import os
 import logging
 
 from ssrspeed.shell import cli as cli_cfg
-
 from ssrspeed.utils import check_platform, RequirementsCheck
-
 from ssrspeed.core import SSRSpeedCore
 
 from config import config
@@ -38,8 +36,6 @@ if (__name__ == "__main__"):
 		logger.critical("Your system does not supported.Please contact developer.")
 		sys.exit(1)
 
-	
-
 	DEBUG = False
 	CONFIG_LOAD_MODE = 0 #0 for import result,1 for guiconfig,2 for subscription url
 	CONFIG_FILENAME = ""
@@ -53,8 +49,8 @@ if (__name__ == "__main__"):
 	EXCLUDE_REMARK_KEWORD = []
 	TEST_METHOD = ""
 	TEST_MODE = ""
-	PROXY_TYPE = "SSR"
-	SPLIT_CNT = 0
+	#PROXY_TYPE = "SSR"
+	#SPLIT_CNT = 0
 	SORT_METHOD = ""
 	SKIP_COMFIRMATION = False
 	RESULT_IMAGE_COLOR = "origin"
@@ -104,6 +100,7 @@ if (__name__ == "__main__"):
 	else:
 		logger.warn("Requirements check skipped.")
 
+	'''
 	if (options.proxy_type):
 		if (options.proxy_type.lower() == "ss"):
 			PROXY_TYPE = "SS"
@@ -115,6 +112,7 @@ if (__name__ == "__main__"):
 			PROXY_TYPE = "V2RAY"
 		else:
 			logger.warn("Unknown proxy type {} ,using default ssr.".format(options.proxy_type))
+	'''
 
 	#print(options.test_method)
 	if (options.test_method == "speedtestnet"):
@@ -175,8 +173,10 @@ if (__name__ == "__main__"):
 		)
 	)
 
+	'''
 	if (int(options.split_count) > 0):
 		SPLIT_CNT = int(options.split_count)
+	'''
 	
 	if (options.sort_method):
 		sm = options.sort_method
@@ -192,21 +192,11 @@ if (__name__ == "__main__"):
 		else:
 			logger.error("Sort method %s not support." % sm)
 
-
 	sc = SSRSpeedCore()
-	'''
-	sc.webSetup(
-		testMode = TEST_MODE,
-		testMethod = TEST_METHOD,
-		colors = RESULT_IMAGE_COLOR,
-		sortMethod = SORT_METHOD,
-		proxyType = PROXY_TYPE
-	)
-	'''
 
 	if (options.import_file and CONFIG_LOAD_MODE == 0):
 		IMPORT_FILENAME = options.import_file
-		sc.importAndExport(IMPORT_FILENAME)
+		sc.import_and_export(IMPORT_FILENAME)
 		sys.exit(0)
 
 	configs = []
@@ -238,9 +228,7 @@ if (__name__ == "__main__"):
 		EXCLUDE_GROUP_KEYWORD,
 		EXCLUDE_REMARK_KEWORD
 	)
-	'''
-	sc.cleanResults()
-	'''
+	sc.clean_result()
 
 	if (not SKIP_COMFIRMATION):
 		ans = input("Before the test please confirm the nodes,Ctrl-C to exit. (Y/N)")
@@ -249,7 +237,7 @@ if (__name__ == "__main__"):
 		else:
 			sys.exit(0)
 	
-	sc.startTest()
+	sc.start_test()
 
 
 

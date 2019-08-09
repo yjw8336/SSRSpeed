@@ -37,25 +37,22 @@ class SSRSpeedCore(object):
 		self.colors = "origin"
 		self.sortMethod = ""
 		self.testMode = "TCP_PING"
-		self.subscriptionUrl = ""
-		self.configFile = ""
 		
 		self.__timeStampStart = -1
 		self.__timeStampStop = -1
-		self.__client = None
 		self.__parser = UniversalParser()
 		self.__stc = None
-		self.__platformInfo = check_platform()
 		self.__results = []
 		self.__status = "stopped"
-	
+
+	'''
 	def webGetColors(self):
 		return config["exportResult"]["colors"]
 	
 	def webGetStatus(self):
 		return self.__status
 	
-	'''
+	
 	def webReadSubscription(self,url,proxyType):
 		parser = self.__getParserByProxyType(proxyType)
 		if (parser):
@@ -84,14 +81,6 @@ class SSRSpeedCore(object):
 		if (self.__parser):
 			self.__parser.cleanConfigs()
 			self.__parser.addConfigs(configs)
-
-	def consoleReadSubscription(self, url):
-		if (self.__parser):
-			self.__parser.readSubscriptionConfig(url)
-
-	def consoleReadFileConfigs(self, filename):
-		if (self.__parser):
-			self.__parser.readGuiConfig(filename)
 	'''
 	
 	def console_setup(self,
@@ -106,25 +95,15 @@ class SSRSpeedCore(object):
 		self.testMode = test_mode
 		self.sortMethod = sort_method
 		self.colors = color
-		if cfg_filename:
-			pass
-			#TODO: Read configuration from config file.
-		elif url:
-			self.__subscription_setup(url)
-		else:
-			raise ValueError("Subscription URL or configuration file must be set !")
-		
-	#	self.__parser.print_nodes()
-
-	def __subscription_setup(
-		self,
-		url: str,
-
-	):
 		if self.__parser:
-			self.__parser.read_subscription(url)
+			if cfg_filename:
+				self.__parser.read_gui_config(cfg_filename)
+			elif url:
+				self.__parser.read_subscription(url)
+			else:
+				raise ValueError("Subscription URL or configuration file must be set !")
 
-	def startTest(self):
+	def start_test(self):
 		self.__timeStampStart = time.time()
 		self.__stc = SpeedTest(self.__parser, self.testMethod)
 		self.__status = "running"
@@ -139,15 +118,15 @@ class SSRSpeedCore(object):
 		self.__timeStampStop = time.time()
 		self.__exportResult()
 
-	def cleanResults(self):
+	def clean_result(self):
 		self.__results = []
 		if (self.__stc):
 			self.__stc.resetStatus()
 
-	def getResults(self):
+	def get_results(self):
 		return self.__results
 
-	def webGetResults(self):
+	def web_get_results(self):
 		if (self.__status == "running"):
 			if (self.__stc):
 				status = "running"
@@ -161,27 +140,15 @@ class SSRSpeedCore(object):
 			"results":self.__stc.getResult() if (self.__stc) else []
 		}
 		return r
-	
-	'''
-	def __readNodes(self):
-		self.__parser.cleanConfigs()
-		if (self.configFile):
-			self.__parser.readGuiConfig(self.configFile)
-		elif(self.subscriptionUrl):
-			self.__parser.readSubscriptionConfig(self.subscriptionUrl)
-		else:
-			logger.critical("No config.")
-			sys.exit(1)
-	'''
 
 	def filter_nodes(self, fk=[], fgk=[], frk=[], ek=[], egk=[], erk=[]):
 	#	self.__parser.excludeNode([],[],config["excludeRemarks"])
-		self.__parser.filter_nodes(fk, fgk, frk, ek, egk, erk)
+		self.__parser.filter_nodes(fk, fgk, frk, ek, egk, erk + config["excludeRemarks"])
 		self.__parser.print_nodes()
 		logger.info("{} node(s) will be test.".format(len(self.__parser.nodes)))
 	
 
-	def importAndExport(self,filename,split=0):
+	def import_and_export(self,filename,split=0):
 		self.__results = importResult(filename)
 		self.__exportResult(split,2)
 		self.__results = []

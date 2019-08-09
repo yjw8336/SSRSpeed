@@ -107,6 +107,7 @@ def setOpts(parser):
 		default = [],
 		help="Exclude nodes by remarks using keyword."
 		)
+	'''
 	parser.add_option(
 		"-t","--type",
 		action="store",
@@ -114,6 +115,7 @@ def setOpts(parser):
 		default = "ssr",
 		help="Select proxy type in [ssr,ssr-cs,ss,v2ray],default ssr."
 		)
+	'''
 	parser.add_option(
 		"-y","--yes",
 		action="store_true",
@@ -128,15 +130,16 @@ def setOpts(parser):
 		default="",
 		help="Set the colors when exporting images.."
 		)
+	'''
 	parser.add_option(
 		"-s","--split",
 		action="store",
 		dest="split_count",
 		default="-1",
 		help="Set the number of nodes displayed in a single image when exporting images."
-		)
+	'''
 	parser.add_option(
-		"-S","--sort",
+		"-s","--sort",
 		action="store",
 		dest="sort_method",
 		default="",
