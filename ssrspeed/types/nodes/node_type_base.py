@@ -22,6 +22,10 @@ class BaseNode:
 	def config(self) -> dict:
 		return deepcopy(self._config)
 
+	def update_config(self, new_cfg: dict):
+		if new_cfg:
+			self._config.update(new_cfg)
+
 	def __eq__(self, other):
 		return (
 			self._config["server"] == other.config["server"] and

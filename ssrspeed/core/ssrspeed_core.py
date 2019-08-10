@@ -45,6 +45,9 @@ class SSRSpeedCore(object):
 		self.__stc = None
 		self.__results = []
 		self.__status = "stopped"
+
+	def set_group(self, group: str):
+		self.__parser.set_group(group)
 	
 	#Web Methods
 	def web_get_colors(self):

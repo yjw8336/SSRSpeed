@@ -114,6 +114,13 @@ def setOpts(parser):
 		default = False,
 		help="Replace the ShadowsocksR-libev with the ShadowsocksR-C# (Only Windows)."
 	)
+	parser.add_option(
+		"-g",
+		action="store",
+		dest="group_override",
+		default="",
+		help="Manually set group."
+	)
 	'''
 	parser.add_option(
 		"-t","--type",

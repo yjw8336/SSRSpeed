@@ -2,7 +2,7 @@
 
 config = {
 	"VERSION":"2.6.0-pre_alpha",
-	"WEB_API_VERSION":"0.5.0_pre_alpha",
+	"WEB_API_VERSION":"0.5.1_pre_alpha",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
 	"excludeRemarks":[

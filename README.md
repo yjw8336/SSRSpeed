@@ -82,6 +82,7 @@ The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
       --exclude-group       Exclude nodes by group using keyword.
       --exclude-remark      Exclude nodes by remarks using keyword.
       --use-ssr-cs          Replace the ShadowsocksR-libev with the ShadowsocksR-C# (Only Windows)
+      -g GROUP              Manually set group.
       -y, --yes             Skip node list confirmation before test.
       -C RESULT_COLOR, --color=RESULT_COLOR
                         Set the colors when exporting images..
@@ -207,6 +208,7 @@ POST => {
 	"colors" : "Color Name", //Ignorable
 	"sortMethod" : "Sort Method", //Ignorable
 	"useSsrCSharp": "bool", //Ignorable
+	"group": "Group", //Ignorable
 	"configs":[] //Standard configuration array
 }
 Response (Task Done) => "done"
@@ -239,7 +241,7 @@ Response (No Configs) => "no configs"
    - Chunxiaoyi 纯小亦
 -  Bugs Report
    - [Professional-V1](https://t.me/V1_BLOG)
-   -  [Julydate 七夏浅笑](https://www.julydate.com/)
+   - [Julydate 七夏浅笑](https://www.julydate.com/)
 - This project uses the following open source projects
    -  [speedtest-cli](https://github.com/sivel/speedtest-cli)
    -  [Fast.com-cli](https://github.com/nkgilley/fast.com)

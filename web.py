@@ -154,6 +154,7 @@ def startTest():
 		sortMethod =data.get("sortMethod","")
 		testMode = data.get("testMode","")
 		use_ssr_cs = data.get("useSsrCSharp", False)
+		group = data.get("group", "")
 		sc.web_setup(
 			testMode = testMode,
 			testMethod = testMethod,
@@ -162,6 +163,8 @@ def startTest():
 		)
 		sc.clean_result()
 		sc.web_set_configs(configs)
+		if group:
+			sc.set_group(group)
 		sc.start_test(use_ssr_cs)
 		return 'done'
 	return 'invalid method'

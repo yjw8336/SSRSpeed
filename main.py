@@ -219,7 +219,9 @@ if (__name__ == "__main__"):
 		)
 	#	sc.consoleReadSubscription(CONFIG_URL)
 
-	
+	if options.group_override:
+		sc.set_group(options.group_override)
+
 	sc.filter_nodes(
 		FILTER_KEYWORD,
 		FILTER_GROUP_KRYWORD,

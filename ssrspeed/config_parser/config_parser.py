@@ -55,6 +55,15 @@ class UniversalParser:
 	def set_nodes(self, nodes: list):
 		self.__clean_nodes()
 		self.__nodes = nodes
+	
+	def set_group(self, group: str):
+		tmp_nodes = deepcopy(self.__nodes)
+		self.__clean_nodes()
+		for node in tmp_nodes:
+			if group:
+				node.update_config({"group": group})
+			self.__nodes.append(node)
+		
 
 	def parse_links(self, links: list):
 		#Single link parse
