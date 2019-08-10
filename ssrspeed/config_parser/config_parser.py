@@ -60,6 +60,7 @@ class UniversalParser:
 		#Single link parse
 		result = []
 		for link in links:
+			link = link.replace("\r", "")
 			node = None
 			if link[:5] == "ss://":
 				#Shadowsocks
@@ -103,7 +104,7 @@ class UniversalParser:
 					except ValueError:
 						pass
 				if not cfg:
-					logger.error("Parse link {} failed.".format(link))
+					logger.error(f"Invalid vmess link: {link}")
 				else:
 					gen_cfg = V2RayBaseConfigs.generate_config(cfg, LOCAL_ADDRESS, LOCAL_PORT)
 					node = NodeV2Ray(gen_cfg)
@@ -152,7 +153,8 @@ class UniversalParser:
 		}
 		rep = requests.get(url,headers = header, timeout=15)
 		rep.encoding = "utf-8"
-		rep = rep.content.decode("utf-8")
+	#	rep = rep.content.decode("utf-8")
+		rep = rep.text
 
 		parsed = False
 		#Try ShadowsocksD Parser
@@ -168,7 +170,6 @@ class UniversalParser:
 		#Try base64 decode
 		try:
 			rep = rep.strip()
-			logger.info("Try Shadowsocks Basic Parser.")
 			links = (b64plus.decode(rep).decode("utf-8")).split("\n")
 			logger.debug("Base64 decode success.")
 			self.__nodes = self.parse_links(links)

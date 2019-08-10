@@ -3,7 +3,7 @@
 import base64
 
 def fillb64(data):
-	if (len(data) % 4):
+	if len(data) % 4:
 		data += "=" * (4 - (len(data) % 4))
 	return data
 
