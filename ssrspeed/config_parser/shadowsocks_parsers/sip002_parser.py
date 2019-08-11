@@ -28,8 +28,9 @@ class ParserShadowsocksSIP002:
 		plugin_raw = url_data.query
 		remarks = url_data.fragment
 		decoded = b64plus.decode(url_data.netloc[:url_data.netloc.find("@")]).decode("utf-8")
-		encryption = decoded.split(":")[0]
-		password = decoded.split(":")[1]
+		d_pos = decoded.find(":")
+		encryption = decoded[:d_pos]
+		password = decoded[d_pos + 1:]
 
 		ad_port = url_data.netloc[url_data.netloc.find("@") + 1:].split(":")
 		if len(ad_port) != 2:
