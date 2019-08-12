@@ -5,3 +5,5 @@ pysocks
 flask
 flask-cors
 pyyaml
+aiohttp
+aiohttp_socks
