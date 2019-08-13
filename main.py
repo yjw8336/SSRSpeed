@@ -115,10 +115,12 @@ if (__name__ == "__main__"):
 	'''
 
 	#print(options.test_method)
-	if (options.test_method == "speedtestnet"):
+	if options.test_method == "speedtestnet":
 		TEST_METHOD = "SPEED_TEST_NET"
-	elif(options.test_method == "fast"):
+	elif options.test_method == "fast":
 		TEST_METHOD = "FAST"
+	elif options.test_method == "stasync":
+		TEST_METHOD = "ST_ASYNC"
 	else:
 		TEST_METHOD = "SOCKET"
 

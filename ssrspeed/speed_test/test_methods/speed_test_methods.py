@@ -13,6 +13,7 @@ logger = logging.getLogger("Sub")
 from . import speedtestnet
 from . import fast
 from . import st_socket as stSocket
+from . import st_asyncio
 from . import webpage_simulation
 #import SSRSpeed.SpeedTest.Methods.cachefly as cachefly
 from .ping import tcp_ping, google_ping
@@ -71,6 +72,13 @@ class SpeedTestMethods(object):
 		elif (method == "SOCKET"):#Old speedtest
 			try:
 				return stSocket.speedTestSocket(LOCAL_PORT)
+			except:
+				logger.exception("")
+				return 0
+		elif method == "ST_ASYNC":
+			try:
+				#TODO: Url
+				return st_asyncio.start("https://dl.google.com/dl/android/studio/install/3.4.2.0/android-studio-ide-183.5692245-windows.exe", LOCAL_ADDRESS, LOCAL_PORT)
 			except:
 				logger.exception("")
 				return 0

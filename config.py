@@ -1,7 +1,7 @@
 #coding:utf-8
 
 config = {
-	"VERSION":"2.6.0-pre_alpha",
+	"VERSION":"2.6.0-pre_beta",
 	"WEB_API_VERSION":"0.5.1_pre_alpha",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
