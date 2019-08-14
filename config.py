@@ -48,7 +48,7 @@ config = {
 		"server":"",
 		"remark":"Example Remark."
 	},
-	"speedtestsocket":{
+	"downloadRules":{
 		"maxThread":4,	#Thread count
 		"buffer":4096,	#Buffer size,bytes
 		"skipRuleMatch":False,
@@ -93,4 +93,6 @@ config = {
 		]
 	}
 }
+
+config["speedtestsocket"] = config["downloadRules"] #TODO: Deprecate
 
