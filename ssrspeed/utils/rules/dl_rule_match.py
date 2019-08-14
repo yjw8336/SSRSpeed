@@ -28,9 +28,9 @@ class DownloadRuleMatch:
 		return default
 	
 	def _check_rule(self, data: dict):
-		isp = data["isp"].strip()
-		country_code = data["countryCode"].strip()
-		continent = data["continent"].strip()
+		isp = data["organization"].strip()
+		country_code = data["country_code"].strip()
+		continent = data["continent_code"].strip()
 		rules = self._config["rules"]
 		for rule in rules:
 			if rule["mode"].lower() == "match_isp":
@@ -52,7 +52,7 @@ class DownloadRuleMatch:
 
 	def get_url(self, data: dict) -> str:
 		try:
-			if data:
+			if data and not self._config["skipRuleMatch"]:
 				return self._check_rule(data)
 			else:
 				return self._get_download_link()

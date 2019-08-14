@@ -1,7 +1,9 @@
 #coding:utf-8
+#TODO: Change config file to json
+#TODO: Automatic config init
 
 config = {
-	"VERSION":"2.6.0-pre_beta",
+	"VERSION":"2.6.1-alpha",
 	"WEB_API_VERSION":"0.5.1_pre_alpha",
 	"localAddress":"127.0.0.1",
 	"localPort":1087,
@@ -51,7 +53,7 @@ config = {
 	"downloadRules":{
 		"maxThread":4,	#Thread count
 		"buffer":4096,	#Buffer size,bytes
-		"skipRuleMatch":False,
+		"skipRuleMatch": False,
 		"rules":[
 			{
 				"mode":"match_isp", #match_isp or match_location
@@ -94,5 +96,5 @@ config = {
 	}
 }
 
-config["speedtestsocket"] = config["downloadRules"] #TODO: Deprecate
+config["speedTestDownload"] = config["downloadRules"] #TODO: Deprecate
 

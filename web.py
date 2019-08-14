@@ -1,5 +1,4 @@
 #coding:utf-8
-#TODO: Change flask to aiohttp
 
 import time
 import sys

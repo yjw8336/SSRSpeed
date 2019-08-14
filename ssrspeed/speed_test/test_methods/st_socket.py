@@ -11,22 +11,16 @@ import copy
 import logging
 
 logger = logging.getLogger("Sub")
-"""
-logger = logging.getLogger("main")
-logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter("[%(asctime)s][%(levelname)s][%(thread)d][%(filename)s:%(lineno)d]%(message)s")
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(formatter)
-logger.addHandler(consoleHandler)
-"""
 
-from ...utils.geo_ip import parseLocation
+from ...utils.geo_ip import IPLoc
+from ...utils.rules import DownloadRuleMatch
+
 from config import config
 
-MAX_THREAD = config["speedtestsocket"]["maxThread"]
+MAX_THREAD = config["speedTestDownload"]["maxThread"]
 DEFAULT_SOCKET = socket.socket
 MAX_FILE_SIZE = 100 * 1024 * 1024
-BUFFER = config["speedtestsocket"]["buffer"]
+BUFFER = config["speedTestDownload"]["buffer"]
 EXIT_FLAG = False
 LOCAL_PORT = 1080
 LOCK = threading.Lock()
@@ -99,91 +93,24 @@ def speedTestThread(link):
 		logger.exception("")
 		return 0
 
-def getDownloadLink(tag = None):
-	cfg = config["speedtestsocket"]["downloadLinks"]
-	defaultCfg = {}
-	for link in cfg:
-		if (link["tag"].strip() == "Default"):
-			defaultCfg = link
-			break
-	if (not tag):
-		return(defaultCfg["link"],defaultCfg["fileSize"])
-	for link in cfg:
-		if(link["tag"].strip() == tag.strip()):
-			logger.info("Tag matched : %s" % tag)
-			return (link["link"],link["fileSize"])
-	logger.warn("Tag %s not matched,using default." % tag)
-	return(defaultCfg["link"],defaultCfg["fileSize"])
-
-def checkRule():
-	try:
-		res = (False,"DEFAULT","DEFAULT","DEFAULT")
-		res = parseLocation()
-		if (not res[0]):
-			logger.error("Parse location failed,using default.")
-			return getDownloadLink()
-	#	countryCode = res[1].strip()
-	#	cotinent = res[2].strip()
-		isp = res[3].strip()
-		rules = config["speedtestsocket"]["rules"]
-		for rule in rules:
-			if (rule["mode"] == "match_isp"):
-				if (isp in rule["ISP"].strip()):
-					logger.info("ISP %s matched." % isp)
-					return getDownloadLink(rule["tag"])
-			elif(rule["mode"] == "match_location"):
-				logger.debug("Match mode : Location")
-				for code in rule.get("countries",[]): 
-					if (res[1].strip() == code.strip()):
-						logger.info("Country code %s matched." % res[1])
-						return getDownloadLink(rule["tag"])
-				if (rule.get("continent","") != "" and rule["continent"].strip() in res[2].strip()):
-					logger.info("Continent %s matched." % res[2])
-					return getDownloadLink(rule["tag"])
-		logger.info("No rule matched.using default.")
-		return getDownloadLink()
-	except:
-		logger.exception("Match Rule Error,using default.")
-		return getDownloadLink()
-
-def calcMaxSpeed(maxSpeed,deltaRecv,deltaTime):
-	if (maxSpeed == 0):
-		return (deltaRecv / deltaTime * 0.7)
-	else:
-		a = 2 / (1+32)
-		return (0.5 + maxSpeed * (1 - a) + a * deltaRecv / deltaTime)
-
 def speedTestSocket(port):
 	global EXIT_FLAG,LOCAL_PORT,MAX_TIME,TOTAL_RECEIVED,MAX_FILE_SIZE
 	LOCAL_PORT = port
-	if (not config["speedtestsocket"]["skipRuleMatch"]):
-		res = checkRule()
-	else:
-		logger.info("Skip rule match.")
-		res = getDownloadLink()
-	link = res[0]
+
+	dlrm = DownloadRuleMatch()
+	res = dlrm.get_url(IPLoc())
+
 	MAX_FILE_SIZE = res[1] * 1024 * 1024
-	#print(link,MAX_FILE_SIZE)
-	#return 0
-	#logger.debug("Actived threads: %d" % threading.active_count())
 	MAX_TIME = 0
 	TOTAL_RECEIVED = 0
 	EXIT_FLAG = False
-	socks.set_default_proxy(socks.SOCKS5,"127.0.0.1",LOCAL_PORT)
+	socks.set_default_proxy(socks.SOCKS5,"127.0.0.1", LOCAL_PORT)
 	socket.socket = socks.socksocket
-#	ii = 0
-#	threadCount = threading.active_count()
-#	while (threadCount > 1):
-#		logger.info("Waiting for thread exit,please wait,thread count : %d" % (threadCount - 1))
-#		ii += 1
-#		time.sleep(2)
-#		threadCount = threading.active_count()
-#		if (ii >= 3):
-#			logger.warn("%d thread(s) still running,skipping." % (threadCount - 1))
-#			break
+
 	for i in range(0,MAX_THREAD):
-		nmsl = threading.Thread(target=speedTestThread,args=(link,))
+		nmsl = threading.Thread(target=speedTestThread,args=(res[0],))
 		nmsl.start()
+		
 	maxSpeedList = []
 	maxSpeed = 0
 	currentSpeed = 0
@@ -192,16 +119,11 @@ def speedTestSocket(port):
 	for i in range(1,21):
 		time.sleep(0.5)
 		LOCK.acquire()
-	#	print("Delta Received : %d" % DELTA_RECEIVED)
 		DELTA_RECEIVED = TOTAL_RECEIVED - OLD_RECEIVED
 		OLD_RECEIVED = TOTAL_RECEIVED
 		LOCK.release()
 		currentSpeed = DELTA_RECEIVED / 0.5
-	#	maxSpeed = calcMaxSpeed(maxSpeed,DELTA_RECEIVED,0.5)
-	#	maxSpeed = max(maxSpeed,currentSpeed)
-	#	if (maxSpeed not in maxSpeedList):
 		maxSpeedList.append(currentSpeed)
-	#	print("maxSpeed : %.2f" % (maxSpeed / 1024 / 1024))
 		print("\r[" + "="*i + "> [%d%%/100%%] [%.2f MB/s]" % (int(i * 5),currentSpeed / 1024 / 1024),end='')
 		if (EXIT_FLAG):
 			break
@@ -217,7 +139,6 @@ def speedTestSocket(port):
 	restoreSocket()
 	rawSpeedList = copy.deepcopy(maxSpeedList)
 	maxSpeedList.sort()
-#	print (maxSpeedList)
 	if (len(maxSpeedList) > 12):
 		msum = 0
 		for i in range(12,len(maxSpeedList) - 2):
@@ -225,11 +146,7 @@ def speedTestSocket(port):
 		maxSpeed = (msum / (len(maxSpeedList) - 2 - 12))
 	else:
 		maxSpeed = currentSpeed
-#	print(maxSpeed / 1024 / 1024)
 	logger.info("Fetched {:.2f} KB in {:.2f} s.".format(TOTAL_RECEIVED / 1024,MAX_TIME))
 	return (TOTAL_RECEIVED / MAX_TIME,maxSpeed,rawSpeedList,TOTAL_RECEIVED)
 
-if (__name__ == "__main__"):
-	res = speedTestSocket(1080)
-	print(res[0] / 1024 / 1024,res[1] / 1024 / 1024)
 

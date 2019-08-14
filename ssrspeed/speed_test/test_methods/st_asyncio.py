@@ -9,6 +9,7 @@ import asyncio
 import aiohttp
 from aiohttp_socks import SocksVer, SocksError, SocksConnector, SocksConnectionError
 
+from ...utils.geo_ip import IPLoc
 from ...utils.rules import DownloadRuleMatch
 
 logger = logging.getLogger("Sub")
@@ -21,6 +22,7 @@ class Statistics:
 		self._start_time = 0
 		self._statistics_time = 0
 		self._time_used = 0
+		self._count = 0
 		self._speed_list = []
 
 	@property
@@ -62,20 +64,25 @@ class Statistics:
 		self._total_red += received
 		if delta_time > 0.5:
 			self._statistics_time = cur_time
-			await self._show_progress(delta_time)
+			try:
+				self._show_progress(delta_time)
+			except StopIteration:
+				pass
 		if self.time_used > 10:
 			self._stopped = True
 
 	def show_progress_full(self):
 		mb_red = self._total_red / 1024 / 1024
-		print("\r[" + "=" * int(self._time_used // 0.5) + "] [{:.2f} MB/s]".format(mb_red / self._time_used), end='\n')
+		print("\r[" + "=" * self._count + "] [{:.2f} MB/s]".format(mb_red / self._time_used), end='\n')
 		logger.info("Fetched {:.2f} MB in {:.2f}s".format(mb_red, self._time_used))
 	
-	async def _show_progress(self, delta_time: int):
+	def _show_progress(self, delta_time: int):
 		speed = (self._total_red - self._delta_red) / delta_time
 		speed_mb = speed / 1024 / 1024
 		self._delta_red = self._total_red
-		print("\r[" + "=" * int(self._time_used // delta_time) + "> [{:.2f} MB/s]".format(speed_mb), end='')
+	#	print("\r[" + "=" * int(self._time_used // delta_time) + "> [{:.2f} MB/s]".format(speed_mb), end='')
+		self._count += 1
+		print("\r[" + "=" * self._count + "> [{:.2f} MB/s]".format(speed_mb), end='')
 		self._speed_list.append(speed)
 
 async def _fetch(url: str, sta: Statistics, host: str = "127.0.0.1", port: int = 1087):
@@ -99,8 +106,7 @@ def start(
 	workers: int = 4
 	):
 	dlrm = DownloadRuleMatch()
-	#TODO: Rule Match
-	res = dlrm.get_url({})
+	res = dlrm.get_url(IPLoc())
 	url = res[0]
 	file_size = res[1]
 	logger.debug(f"Url: {url}, file_size: {file_size} MiB")

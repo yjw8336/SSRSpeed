@@ -1,10 +1,5 @@
 #coding:utf-8
 
-#Code Refactor Stage 2: Automatic identification of proxy types
-#Proxy Type Identification Done.
-#Automatic client selection.
-#TODO: Full Test
-
 import time
 import logging
 import json
