@@ -12,7 +12,12 @@ from aiohttp_socks import SocksVer, SocksError, SocksConnector, SocksConnectionE
 from ...utils.geo_ip import IPLoc
 from ...utils.rules import DownloadRuleMatch
 
+from config import config
+
 logger = logging.getLogger("Sub")
+
+WORKERS = config["fileDownload"]["maxWorkers"]
+BUFFER = config["fileDownload"]["buffer"]
 
 class Statistics:
 	def __init__(self):
@@ -92,18 +97,22 @@ async def _fetch(url: str, sta: Statistics, host: str = "127.0.0.1", port: int =
 		port = port,
 		rdns = True
 	)
+	logger.info(f"Fetching {url} via {host}:{port}.")
 	async with aiohttp.ClientSession(connector=connector, headers={"User-Agent": "curl/11.45.14"}) as session:
+		logger.debug("Session created.")
 		async with session.get(url) as response:
+			logger.debug("Awaiting response.")
 			while not sta.stopped:
-				chunk = await response.content.read(4096)
+				chunk = await response.content.read(BUFFER)
 				if not chunk:
+					logger.info("No chunk, task stopped.")
 					break
 				await sta.record(len(chunk))
 
 def start(
 	proxy_host = "127.0.0.1",
 	proxy_port: int = 1087,
-	workers: int = 4
+	workers: int = WORKERS
 	):
 	dlrm = DownloadRuleMatch()
 	res = dlrm.get_url(IPLoc())

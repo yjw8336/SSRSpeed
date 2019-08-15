@@ -8,6 +8,8 @@ import threading
 import urllib.parse
 import logging
 
+from config import config
+
 from flask import Flask,request,redirect#,render_template
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -23,8 +25,6 @@ from ssrspeed.result import importResult
 
 from ssrspeed.types.errors.webapi.error_file_not_allowed import FileNotAllowed
 from ssrspeed.types.errors.webapi.error_file_common import WebFileCommonError
-
-from config import config
 
 WEB_API_VERSION = config["WEB_API_VERSION"]
 

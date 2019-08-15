@@ -17,10 +17,10 @@ from ...utils.rules import DownloadRuleMatch
 
 from config import config
 
-MAX_THREAD = config["speedTestDownload"]["maxThread"]
+MAX_THREAD = config["fileDownload"]["maxWorkers"]
 DEFAULT_SOCKET = socket.socket
 MAX_FILE_SIZE = 100 * 1024 * 1024
-BUFFER = config["speedTestDownload"]["buffer"]
+BUFFER = config["fileDownload"]["buffer"]
 EXIT_FLAG = False
 LOCAL_PORT = 1080
 LOCK = threading.Lock()

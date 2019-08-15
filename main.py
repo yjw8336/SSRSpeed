@@ -5,11 +5,11 @@ import sys
 import os
 import logging
 
+from config import config
+
 from ssrspeed.shell import cli as cli_cfg
 from ssrspeed.utils import check_platform, RequirementsCheck
 from ssrspeed.core import SSRSpeedCore
-
-from config import config
 
 if (not os.path.exists("./logs/")):
 	os.mkdir("./logs/")

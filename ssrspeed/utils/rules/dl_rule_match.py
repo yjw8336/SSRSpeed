@@ -9,7 +9,7 @@ logger = logging.getLogger("Sub")
 
 class DownloadRuleMatch:
 	def __init__(self):
-		self._config = deepcopy(config["downloadRules"])
+		self._config = deepcopy(config["fileDownload"])
 		self._download_links = deepcopy(self._config["downloadLinks"])
 	
 	def _get_download_link(self, tag: str = "") -> str:
