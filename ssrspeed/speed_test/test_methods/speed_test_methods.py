@@ -54,7 +54,7 @@ class SpeedTestMethods(object):
 				s.download()
 				result = s.results.dict()
 				self.__initSocket()
-				return (result["download"] / 8,-1) #bits to bytes
+				return (result["download"] / 8, 0, [], 0) #bits to bytes
 			except:
 				logger.exception("")
 				return 0
@@ -65,7 +65,7 @@ class SpeedTestMethods(object):
 				result = fast.fast_com(verbose=True)
 				self.__initSocket()
 				#print(result)
-				return (result,-1)
+				return (result, 0, [], 0)
 			except:
 				logger.exception("")
 				return 0
