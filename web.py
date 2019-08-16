@@ -62,7 +62,7 @@ sc = None
 
 @app.route("/",methods=["GET"])
 def index():
-	return redirect("https://web.绒布球.site/beta_version", 301)
+	return redirect("https://web.绒布球.site/", 301)
 	#return render_template(
 	#	"index.html"
 	#	)

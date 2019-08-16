@@ -1,8 +1,6 @@
 
 
 
-
-
 <h1 align="center">
     <br>SSRSpeed
 </h1>
@@ -30,6 +28,7 @@ Batch speed measuring tool based on Shadowsocks(R) and V2Ray
 
 ## Features
 
+- Support for asynchronous file download testing.
 - Support SpeedTestNet, Fast.com and socket download.
 - Support for exporting result as json and png.
 - Support batch import of configuration from GUI configuration file and SSPanel-v2, v3 subscription link.
@@ -140,7 +139,7 @@ You can now access the WebUI through http://127.0.0.1:10870
 ## Advanced Usage
 
  - **Rules**
-	 - The program has a built-in rule matching mode that allows specific ISPs or nodes in specific regions to use specific speed sources through custom rules for "Socket" test mode.Rules need to be written in config.py. Please see config.py for more details.
+   - The program has a built-in rule matching mode that allows specific ISPs or nodes in specific regions to use specific speed sources through custom rules for "Socket" test mode.Rules need to be written in config.py. Please see config.py for more details.
 - **Custom color**
    - Users can customize the color of the resulting image in config.py. See the config.py file for sample configuration.
 
@@ -161,8 +160,8 @@ The interfaces encapsulated in web.py are as follows:
 
 ~~~~
 {
-	"main" : "2.4.1",
-	"webapi" : "0.4.1-beta"
+  "main" : "2.4.1",
+  "webapi" : "0.4.1-beta"
 }
 ~~~~
  - /status The interface is requested without any parameters. The return example after the request is successful is as follows:
@@ -173,13 +172,13 @@ stopped => Connected to the backend but no test is running
  - /readsubscriptions The parameters and examples required to request this interface are returned as follows:
 ~~~~
 POST => {
-	"url" : "subscription url"
+  "url" : "subscription url"
 }
 Response (Success) => [
-	{
-	"type": "Proxy type of this configuration.",
-	"config": {"Standard Configuration"}
-	}
+  {
+  "type": "Proxy type of this configuration.",
+  "config": {"Standard Configuration"}
+  }
 ]
 Response (running) => "running" 
 Response (Invalid URL) => "invalid url"
@@ -188,13 +187,13 @@ Response (Invalid URL) => "invalid url"
  - /readfileconfig The parameters and examples required to request this interface are returned as follows:
 ~~~~
 POST => {
-	file: file
+  file: file
 }
 Response (Success) => [
-	{
-	"type": "Proxy type of this configuration.",
-	"config": {"Standard Configuration"}
-	}
+  {
+  "type": "Proxy type of this configuration.",
+  "config": {"Standard Configuration"}
+  }
 ]
 Response (running) => "running" 
 Response (Invalid File) => "File type not allowed"
@@ -203,29 +202,29 @@ Response (Invalid File) => "File type not allowed"
  - /getcolors The interface is requested without any parameters. The return example after the request is successful is as follows:
 ~~~~
 [
-	{
-	"Color Config"
-	}
+  {
+  "Color Config"
+  }
 ]
 ~~~~
  - /getresults The interface is requested without any parameters. The return example after the request is successful is as follows:
 ~~~~
 {
-	"status" : "running" or "pending" or "stopped",
-	"current" : {},  //Node information currently being tested
-	"results" : [] //The result array, please refer to the JSON file of the exported result for details.
+  "status" : "running" or "pending" or "stopped",
+  "current" : {},  //Node information currently being tested
+  "results" : [] //The result array, please refer to the JSON file of the exported result for details.
 }
 ~~~~
  - /start The parameters required to request the interface and return are as follows, **NOTE**, this interface is a **blocking interface**
 ~~~~
 POST => {
-	"testMethod" : "Test Method",
-	"testMode" : "Test Mode",
-	"colors" : "Color Name", //Ignorable
-	"sortMethod" : "Sort Method", //Ignorable
-	"useSsrCSharp": "bool", //Ignorable
-	"group": "Group", //Ignorable
-	"configs":[] //Standard configuration array
+  "testMethod" : "Test Method",
+  "testMode" : "Test Mode",
+  "colors" : "Color Name", //Ignorable
+  "sortMethod" : "Sort Method", //Ignorable
+  "useSsrCSharp": "bool", //Ignorable
+  "group": "Group", //Ignorable
+  "configs":[] //Standard configuration array
 }
 Response (Task Done) => "done"
 Response (running) => "running" 
@@ -248,6 +247,4 @@ Response (No Configs) => "no configs"
 |SOCKET|Raw socket with multithreading|
 |SPEED_TEST_NET|Speed Test Net speed test|
 |FAST|Fast.com speed test|
-
-
 
