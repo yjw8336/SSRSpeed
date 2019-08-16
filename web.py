@@ -148,10 +148,10 @@ def startTest():
 		if (not configs):
 			return "No configs"
 		#proxyType =data.get("proxyType","SSR")
-		testMethod =data.get("testMethod","SOCKET")
-		colors =data.get("colors","origin")
-		sortMethod =data.get("sortMethod","")
-		testMode = data.get("testMode","")
+		testMethod =data.get("testMethod", "ST_ASYNC")
+		colors =data.get("colors", "origin")
+		sortMethod =data.get("sortMethod", "")
+		testMode = data.get("testMode", "")
 		use_ssr_cs = data.get("useSsrCSharp", False)
 		group = data.get("group", "")
 		sc.web_setup(

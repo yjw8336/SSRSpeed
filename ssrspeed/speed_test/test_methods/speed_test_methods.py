@@ -40,7 +40,7 @@ class SpeedTestMethods(object):
 	def __initSocket(self):
 		socket.socket = DEFAULT_SOCKET
 
-	def startTest(self,method = "SOCKET"):
+	def startTest(self,method = "ST_ASYNC"):
 		logger.info("Starting speed test with %s" % method)
 		if (method == "SPEED_TEST_NET"):
 			try:

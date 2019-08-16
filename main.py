@@ -121,8 +121,10 @@ if (__name__ == "__main__"):
 		TEST_METHOD = "FAST"
 	elif options.test_method == "stasync":
 		TEST_METHOD = "ST_ASYNC"
-	else:
+	elif options.test_method == "socket":
 		TEST_METHOD = "SOCKET"
+	else:
+		TEST_METHOD = "ST_ASYNC"
 
 	if (options.test_mode == "pingonly"):
 		TEST_MODE = "TCP_PING"
