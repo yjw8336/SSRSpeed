@@ -50,7 +50,7 @@ def setOpts(parser):
 		action="store",
 		dest="test_method",
 		default="socket",
-		help="Select test method in [speedtestnet,fast,socket]."
+		help="Select test method in [speedtestnet, fast, socket, stasync]."
 		)
 	parser.add_option(
 		"-M","--mode",
