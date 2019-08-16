@@ -102,6 +102,13 @@
 				"mode": "match_isp",
 				"ISP": "Google LLC",
 				"tag": "Default"
+			},
+			{
+				"mode": "match_location",
+				"countries": [
+					"TH"
+				],
+				"tag": "Google"
 			}
 		],
 		"downloadLinks": [
