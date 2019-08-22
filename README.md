@@ -5,9 +5,9 @@
 Batch speed measuring tool based on Shadowsocks(R) and V2Ray
 </p>
 <p align="center">
-  <img src="https://img.shields.io/github/tag/NyanChanMeow/SSRSpeed.svg" href="https://github.com/NyanChanMeow/SSRSpeed/tags">
-  <img src="https://img.shields.io/github/release/NyanChanMeow/SSRSpeed.svg" href="https://github.com/NyanChanMeow/SSRSpeed/releases">
-  <img src="https://img.shields.io/github/license/NyanChanMeow/SSRSpeed.svg" href="https://github.com/NyanChanMeow/SSRSpeed/blob/master/LICENSE">
+  <a href="https://github.com/NyanChanMeow/SSRSpeed/tags"><img src="https://img.shields.io/github/tag/NyanChanMeow/SSRSpeed.svg"></a>
+  <a href="https://github.com/NyanChanMeow/SSRSpeed/releases"><img src="https://img.shields.io/github/release/NyanChanMeow/SSRSpeed.svg"></a>
+  <a href="https://github.com/NyanChanMeow/SSRSpeed/blob/master/LICENSE"><img src="https://img.shields.io/github/license/NyanChanMeow/SSRSpeed.svg"></a>
 </p>
 
 <p></p>
