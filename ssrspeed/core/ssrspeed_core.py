@@ -62,10 +62,11 @@ class SSRSpeedCore(object):
 			)
 		return result
 	
-	def web_read_subscription(self, url:str) -> list:
+	def web_read_subscription(self, url: str) -> list:
 		parser = UniversalParser()
-		if (parser):
-			parser.read_subscription(url)
+		urls = url.split(" ")
+		if parser:
+			parser.read_subscription(urls)
 			return self.__generate_web_configs(parser.nodes)
 		return []
 
@@ -105,7 +106,7 @@ class SSRSpeedCore(object):
 			if cfg_filename:
 				self.__parser.read_gui_config(cfg_filename)
 			elif url:
-				self.__parser.read_subscription(url)
+				self.__parser.read_subscription(url.split(" "))
 			else:
 				raise ValueError("Subscription URL or configuration file must be set !")
 
