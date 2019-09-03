@@ -216,7 +216,7 @@ class UniversalParser:
 				logger.debug("Base64 decode success.")
 				self.__nodes.extend(self.parse_links(links))
 				parsed = True
-			except binascii.Error:
+			except ValueError:
 				logger.info("Base64 decode failed.")
 			if parsed: continue
 
