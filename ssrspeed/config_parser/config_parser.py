@@ -16,6 +16,7 @@ from .clash_parser import ParserClash
 from .node_filters import NodeFilter
 
 from config import config
+PROXY_SETTINGS = config["proxy"]
 LOCAL_ADDRESS = config["localAddress"]
 LOCAL_PORT = config["localPort"]
 TIMEOUT = 10
@@ -173,7 +174,26 @@ class UniversalParser:
 				"User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
 			}
 			logger.info("Reading {}".format(url))
-			rep = requests.get(url,headers = header, timeout=15)
+			if PROXY_SETTINGS["enabled"]:
+				auth = ""
+				if PROXY_SETTINGS["username"]:
+					auth = "{}:{}@".format(
+						PROXY_SETTINGS["username"],
+						PROXY_SETTINGS["password"]
+					)
+				proxy = "socks5://{}{}:{}".format(
+					auth,
+					PROXY_SETTINGS["address"],
+					PROXY_SETTINGS["port"]
+				)
+				proxies = {
+					"http": proxy,
+					"https": proxy
+				}
+				logger.info("Reading subscription via {}".format(proxy))
+				rep = requests.get(url,headers = header, timeout=15, proxies=proxies)
+			else:
+				rep = requests.get(url,headers = header, timeout=15)
 			rep.encoding = "utf-8"
 		#	rep = rep.content.decode("utf-8")
 			rep = rep.text
