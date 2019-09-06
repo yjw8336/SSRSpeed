@@ -4,6 +4,7 @@ import time
 import logging
 import json
 import threading
+import socket
 import sys
 import os
 
@@ -21,8 +22,17 @@ from ..result import Sorter
 
 from ..speed_test import SpeedTest
 from ..utils import check_platform
+from ..utils.port_checker import check_port
 
 from config import config
+
+try:
+	check_port(config["localPort"])
+	print("Port {} already in use,".format(config["localPort"]) + " please change the local port in ssrspeed_config.json or terminate the application.")
+	sys.exit(0)
+except (ConnectionRefusedError, socket.timeout):
+	pass
+
 
 class SSRSpeedCore(object):
 	def __init__(self):
