@@ -278,11 +278,10 @@ class SpeedTest(object):
 						)
 					else:
 						logger.error(f"Unknown Test Mode {test_mode}")
-
-				self.__results.append(_item)
 			except Exception:
 				logger.exception("\n")
 			finally:
+				self.__results.append(_item)
 				if client:
 					client.stopClient()
 				node = self.__get_next_config()
