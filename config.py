@@ -4,7 +4,7 @@ import os
 import shutil
 import json
 
-__version__ = "2.6.3"
+__version__ = "2.6.4"
 __web_api_version__ = "0.5.2"
 
 config = {
