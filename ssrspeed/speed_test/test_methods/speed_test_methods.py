@@ -54,10 +54,10 @@ class SpeedTestMethods(object):
 				s.download()
 				result = s.results.dict()
 				self.__initSocket()
-				return (result["download"] / 8, 0, [], 0) #bits to bytes
+				return (result["download"] / 8, 0, [], 0) # bits to bytes
 			except:
 				logger.exception("")
-				return 0
+				return (0, 0, [], 0)
 		elif (method == "FAST"):
 			try:
 				fast.setProxy(LOCAL_ADDRESS,LOCAL_PORT)
@@ -68,19 +68,19 @@ class SpeedTestMethods(object):
 				return (result, 0, [], 0)
 			except:
 				logger.exception("")
-				return 0
+				return (0, 0, [], 0)
 		elif (method == "SOCKET"):#Old speedtest
 			try:
 				return stSocket.speedTestSocket(LOCAL_PORT)
 			except:
 				logger.exception("")
-				return 0
+				return (0, 0, [], 0)
 		elif method == "ST_ASYNC":
 			try:
 				return st_asyncio.start(LOCAL_ADDRESS, LOCAL_PORT)
 			except:
 				logger.exception("")
-				return 0
+				return (0, 0, [], 0)
 		else:
 			raise ValueError("Invalid test method %s" % method)
 
