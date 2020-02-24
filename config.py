@@ -30,5 +30,7 @@ if not LOADED:
 		try:
 			file_config = json.load(f)
 			config.update(file_config)
+		finally:
+			pass
 	LOADED = True
 

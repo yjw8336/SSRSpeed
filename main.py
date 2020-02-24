@@ -3,7 +3,7 @@
 import time
 import sys
 import os
-import logging
+import logging, colorlog
 
 from config import config
 
@@ -25,7 +25,7 @@ loggerList.append(logger)
 formatter = logging.Formatter("[%(asctime)s][%(levelname)s][%(thread)d][%(filename)s:%(lineno)d]%(message)s")
 fileHandler = logging.FileHandler("./logs/" + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + ".log",encoding="utf-8")
 fileHandler.setFormatter(formatter)
-consoleHandler = logging.StreamHandler()
+consoleHandler = colorlog.ConsoleHandler()
 consoleHandler.setFormatter(formatter)
 
 VERSION = config["VERSION"]
