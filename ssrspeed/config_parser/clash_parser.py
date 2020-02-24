@@ -153,7 +153,5 @@ class ParserClash:
 				self.parse_config(f.read())
 			except:
 				logger.exception("Not Clash config.")
-			finally:
-				f.close()
 
 

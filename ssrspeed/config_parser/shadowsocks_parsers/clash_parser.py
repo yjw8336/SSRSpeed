@@ -105,9 +105,7 @@ class ParserShadowsocksClash(object):
 				clashCfg = yaml.load(f,Loader=yaml.FullLoader)
 			except:
 				logger.exception("Not Clash config.")
-				f.close()
 				return False
-			f.close()
 
 		self.__parseConfig(clashCfg)
 		logger.debug("Read {} configs.".format(

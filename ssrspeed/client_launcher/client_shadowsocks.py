@@ -21,7 +21,6 @@ class Shadowsocks(BaseClient):
 	#	self._config["server_port"] = int(self._config["server_port"])
 		with open("./config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(self._config))
-			f.close()
 		if (self._process == None):
 			if (self._checkPlatform() == "Windows"):
 				if (logger.level == logging.DEBUG):
@@ -46,7 +45,6 @@ class Shadowsockss(BaseClient):
 	def getCurrrentConfig(self):
 		with open("./clients/shadowsocks-win/gui-config.json","r",encoding="utf-8") as f:
 			tmpConf = json.loads(f.read())
-			f.close()
 		curIndex = tmpConf["index"]
 		return tmpConf["configs"][curIndex]
 
@@ -54,7 +52,6 @@ class Shadowsockss(BaseClient):
 		self.stopClient()
 		with open("./clients/shadowsocks-win/gui-config.json","r",encoding="utf-8") as f:
 			tmpConf = json.loads(f.read())
-			f.close()
 		tmpConf["configs"] = []
 		try:
 			curConfig = self._configList.pop(0)
@@ -63,7 +60,6 @@ class Shadowsockss(BaseClient):
 		tmpConf["configs"].append(curConfig)
 		with open("./clients/shadowsocks-win/gui-config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(tmpConf))
-			f.close()
 		logger.info("Wait {} secs to start client.".format(3))
 		for i in range(0,6):
 			time.sleep(0.5)
@@ -74,7 +70,6 @@ class Shadowsockss(BaseClient):
 	def __winConf(self):
 		with open("./clients/shadowsocks-win/gui-config.json","r",encoding="utf-8") as f:
 			tmpConf = json.loads(f.read())
-			f.close()
 		tmpConf["localPort"] = self._localPort
 		tmpConf["index"] = 0
 		tmpConf["global"] = False
@@ -84,7 +79,6 @@ class Shadowsockss(BaseClient):
 			tmpConf["configs"].append(iitem)
 		with open("./clients/shadowsocks-win/gui-config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(tmpConf))
-			f.close()
 
 	def startClient(self,config={},testing=False):
 		if (self._process == None):
@@ -98,7 +92,6 @@ class Shadowsockss(BaseClient):
 				self._config["server_port"] = int(self._config["server_port"])
 				with open("./config.json","w+",encoding="utf-8") as f:
 					f.write(json.dumps(self._config))
-					f.close()
 				if (logger.level == logging.DEBUG):
 					self._process = subprocess.Popen(["ss-local","-v","-c","%s/config.json" % os.getcwd()])
 				else:

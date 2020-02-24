@@ -188,7 +188,6 @@ class BaseParser(object):
 					_dict["remarks"] = _dict["server"]
 			#	logger.info(_dict["server"])
 				self._configList.append(_dict)
-			f.close()
 
 		logger.info("Read %d node(s)" % len(self._configList))
 
