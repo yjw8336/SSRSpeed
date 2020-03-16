@@ -238,9 +238,9 @@ if (__name__ == "__main__"):
 	)
 	sc.clean_result()
 
-	if (not SKIP_COMFIRMATION):
+	if not SKIP_COMFIRMATION:
 		ans = input("Before the test please confirm the nodes,Ctrl-C to exit. (Y/N)")
-		if (ans == "Y"):
+		if ans.upper() == "Y":
 			pass
 		else:
 			sys.exit(0)
