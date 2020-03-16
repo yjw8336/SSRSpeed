@@ -364,7 +364,6 @@ class ExportResult(object):
 		filename = "./results/" + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + ".json"
 		with open(filename,"w+",encoding="utf-8") as f:
 			f.writelines(json.dumps(result,sort_keys=True,indent=4,separators=(',',':')))
-			f.close()
 		logger.info("Result exported as %s" % filename)
 		return result
 

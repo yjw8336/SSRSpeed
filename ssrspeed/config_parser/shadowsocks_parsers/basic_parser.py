@@ -108,8 +108,6 @@ class ParserShadowsocksBasic(object):
 			except:
 				logger.exception("Not Shadowsocks configuration file.")
 				return []
-			finally:
-				f.close()
 			
 		logger.info("Read {} node(s).".format(len(self.__configList)))
 		return self.__configList

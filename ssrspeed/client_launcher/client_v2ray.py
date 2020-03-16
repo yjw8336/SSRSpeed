@@ -20,7 +20,6 @@ class V2Ray(BaseClient):
 		self._config = config
 		with open("./config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(self._config))
-			f.close()
 		try:
 			if (self._process == None):
 				if (self._checkPlatform() == "Windows"):

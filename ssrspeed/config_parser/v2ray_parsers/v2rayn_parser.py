@@ -111,8 +111,6 @@ class ParserV2RayN(object):
 				config = json.load(f)
 			except:
 				logger.exception("Not V2RayN Config.")
-				f.close()
 				return False
-			f.close()
 		return self.parse_gui_data(config)
 	

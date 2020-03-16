@@ -31,6 +31,6 @@ if not LOADED:
 			file_config = json.load(f)
 			config.update(file_config)
 		finally:
-			f.close()
+			pass
 	LOADED = True
 

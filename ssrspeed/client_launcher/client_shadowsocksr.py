@@ -26,7 +26,6 @@ class ShadowsocksR(BaseClient):
 	def __ssrCSharpConf(self,config):
 		with open("./clients/shadowsocksr-win/gui-config.json","r+",encoding="utf-8") as f:
 			tmpConf = json.loads(f.read())
-			f.close()
 		tmpConf["localPort"] = self._localPort
 		tmpConf["sysProxyMode"] = 1
 		tmpConf["index"] = 0
@@ -37,14 +36,12 @@ class ShadowsocksR(BaseClient):
 		tmpConf["configs"].append(config)
 		with open("./clients/shadowsocksr-win/gui-config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(tmpConf))
-			f.close()
 
 	def startClient(self,config = {}):
 		self._config = config
 	#	self._config["server_port"] = int(self._config["server_port"])
 		with open("./config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(self._config))
-			f.close()
 		if (self._process == None):
 			if (self._checkPlatform() == "Windows"):
 				if (self.useSsrCSharp):
@@ -77,7 +74,6 @@ class ShadowsocksRR(BaseClient):
 	def __winConf(self):
 		with open("./clients/shadowsocksr-win/gui-config.json","r",encoding="utf-8") as f:
 			tmpConf = json.loads(f.read())
-			f.close()
 		self.__ssrAuth = tmpConf["localAuthPassword"]
 		tmpConf["token"]["SpeedTest"] = "SpeedTest"
 		tmpConf["localPort"] = self._localPort
@@ -97,7 +93,6 @@ class ShadowsocksRR(BaseClient):
 			tmpConf["configs"].append(iitem)
 		with open("./clients/shadowsocksr-win/gui-config.json","w+",encoding="utf-8") as f:
 			f.write(json.dumps(tmpConf))
-			f.close()
 
 	def getCurrrentConfig(self):
 		param = {
@@ -166,7 +161,6 @@ class ShadowsocksRR(BaseClient):
 				self._config["server_port"] = int(self._config["server_port"])
 				with open("./config.json","w+",encoding="utf-8") as f:
 					f.write(json.dumps(self._config))
-					f.close()
 				if (logger.level == logging.DEBUG):
 					self._process = subprocess.Popen(["python3","./clients/shadowsocksr/shadowsocks/local.py","-c","%s/config.json" % os.getcwd()])
 				else:

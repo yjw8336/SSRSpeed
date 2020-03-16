@@ -72,5 +72,6 @@ class ParserShadowsocksR:
 			_dict["group"] = item.get("group","N/A")
 			if not _dict["remarks"]: _dict["remarks"] = _dict["server"]
 			results.append(_dict)
+		return results
 
 
