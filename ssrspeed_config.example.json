@@ -25,6 +25,7 @@
 	},
 	"exportResult": {
 		"uploadResult": false,
+		"hide_max_speed": false,
 		"font": "./resources/fonts/SourceHanSansCN-Medium.otf",
 		"colors": [
 			{

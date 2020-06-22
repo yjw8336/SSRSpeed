@@ -30,6 +30,8 @@ from config import config
 class ExportResult(object):
 	def __init__(self):
 		self.__config = config["exportResult"]
+		self.__hide_max_speed = config["exportResult"]["hide_max_speed"]
+		self.__hide_ntt = not config["ntt"]["enabled"]
 		self.__colors = {}
 		self.__colorSpeedList = []
 		self.__font = ImageFont.truetype(self.__config["font"],18)
@@ -131,7 +133,17 @@ class ExportResult(object):
 		dspeedRightPosition = googlePingRightPosition + otherWidth
 		maxDSpeedRightPosition = dspeedRightPosition + otherWidth
 		ntt_right_position = maxDSpeedRightPosition + otherWidth + 80
-		imageRightPosition = ntt_right_position
+		imageRightPosition = dspeedRightPosition
+
+		if not self.__hide_max_speed:
+			imageRightPosition = maxDSpeedRightPosition
+
+		if not self.__hide_ntt:
+			if self.__hide_max_speed:
+				maxDSpeedRightPosition = dspeedRightPosition
+
+			ntt_right_position = imageRightPosition + otherWidth + 80
+			imageRightPosition = ntt_right_position
 
 		newImageHeight = imageHeight + 30 * 3
 		resultImg = Image.new("RGB",(imageRightPosition, newImageHeight),(255,255,255))
@@ -154,7 +166,8 @@ class ExportResult(object):
 		draw.line((tcpPingRightPosition, 30, tcpPingRightPosition, imageHeight + 30 - 1),fill=(127,127,127),width=1)
 		draw.line((googlePingRightPosition, 30, googlePingRightPosition, imageHeight + 30 - 1),fill=(127,127,127),width=1)
 		draw.line((dspeedRightPosition, 30, dspeedRightPosition, imageHeight + 30 - 1),fill=(127,127,127),width=1)
-		draw.line((maxDSpeedRightPosition, 30, maxDSpeedRightPosition, imageHeight + 30 - 1),fill=(127,127,127),width=1)
+		if not self.__hide_max_speed:
+			draw.line((maxDSpeedRightPosition, 30, maxDSpeedRightPosition, imageHeight + 30 - 1),fill=(127,127,127),width=1)
 		draw.line((imageRightPosition, 0, imageRightPosition, newImageHeight - 1),fill=(127,127,127),width=1)
 	
 		draw.line((0,0,imageRightPosition - 1,0),fill=(127,127,127),width=1)
@@ -202,19 +215,21 @@ class ExportResult(object):
 			"AvgSpeed", font=resultFont, fill=(0,0,0)
 		)
 
-		draw.text(
-			(
-				dspeedRightPosition + self.__getBasePos(maxDSpeedRightPosition - dspeedRightPosition, "MaxSpeed"), 30 + 4
-				),
-			"MaxSpeed", font=resultFont, fill=(0,0,0)
-		)
+		if not self.__hide_max_speed:
+			draw.text(
+				(
+					dspeedRightPosition + self.__getBasePos(maxDSpeedRightPosition - dspeedRightPosition, "MaxSpeed"), 30 + 4
+					),
+				"MaxSpeed", font=resultFont, fill=(0,0,0)
+			)
 
-		draw.text(
-			(
-				maxDSpeedRightPosition + self.__getBasePos(ntt_right_position - maxDSpeedRightPosition, "UDP NAT Type"), 30 + 4
-				),
-			"UDP NAT Type", font=resultFont, fill=(0,0,0)
-		)
+		if not self.__hide_ntt:
+			draw.text(
+				(
+					maxDSpeedRightPosition + self.__getBasePos(ntt_right_position - maxDSpeedRightPosition, "UDP NAT Type"), 30 + 4
+					),
+				"UDP NAT Type", font=resultFont, fill=(0,0,0)
+			)
 	
 		draw.line((0, 60, imageRightPosition - 1, 60),fill=(127,127,127),width=1)
 
@@ -257,23 +272,25 @@ class ExportResult(object):
 				pos = googlePingRightPosition + self.__getBasePos(dspeedRightPosition - googlePingRightPosition, speed)
 				draw.text((pos, 30 * j + 30 + 1), speed,font=resultFont,fill=(0,0,0))
 
-			maxSpeed = item["maxDSpeed"]
-			if (maxSpeed == -1):
-				pos = dspeedRightPosition + self.__getBasePos(maxDSpeedRightPosition - dspeedRightPosition, "N/A")
-				draw.text((pos, 30 * j + 30 + 1),"N/A",font=resultFont,fill=(0,0,0))
-			else:
-				draw.rectangle((dspeedRightPosition + 1,30 * j + 30 + 1,maxDSpeedRightPosition - 1,30 * j + 60 -1),self.__getColor(maxSpeed))
-				maxSpeed = self.__parseSpeed(maxSpeed)
-				pos = dspeedRightPosition + self.__getBasePos(maxDSpeedRightPosition - dspeedRightPosition, maxSpeed)
-				draw.text((pos, 30 * j + 30 + 1), maxSpeed,font=resultFont,fill=(0,0,0))
+			if not self.__hide_max_speed:
+				maxSpeed = item["maxDSpeed"]
+				if (maxSpeed == -1):
+					pos = dspeedRightPosition + self.__getBasePos(maxDSpeedRightPosition - dspeedRightPosition, "N/A")
+					draw.text((pos, 30 * j + 30 + 1),"N/A",font=resultFont,fill=(0,0,0))
+				else:
+					draw.rectangle((dspeedRightPosition + 1,30 * j + 30 + 1,maxDSpeedRightPosition - 1,30 * j + 60 -1),self.__getColor(maxSpeed))
+					maxSpeed = self.__parseSpeed(maxSpeed)
+					pos = dspeedRightPosition + self.__getBasePos(maxDSpeedRightPosition - dspeedRightPosition, maxSpeed)
+					draw.text((pos, 30 * j + 30 + 1), maxSpeed,font=resultFont,fill=(0,0,0))
 
-			nat_type = item["ntt"]["type"]
-			if not nat_type:
-				pos = maxDSpeedRightPosition + self.__getBasePos(ntt_right_position - maxDSpeedRightPosition, "Unknown")
-				draw.text((pos, 30 * j + 30 + 1),"Unknown",font=resultFont,fill=(0,0,0))
-			else:
-				pos = maxDSpeedRightPosition + self.__getBasePos(ntt_right_position - maxDSpeedRightPosition, nat_type)
-				draw.text((pos, 30 * j + 30 + 1), nat_type,font=resultFont,fill=(0,0,0))
+			if not self.__hide_ntt:
+				nat_type = item["ntt"]["type"]
+				if not nat_type:
+					pos = maxDSpeedRightPosition + self.__getBasePos(ntt_right_position - maxDSpeedRightPosition, "Unknown")
+					draw.text((pos, 30 * j + 30 + 1),"Unknown",font=resultFont,fill=(0,0,0))
+				else:
+					pos = maxDSpeedRightPosition + self.__getBasePos(ntt_right_position - maxDSpeedRightPosition, nat_type)
+					draw.text((pos, 30 * j + 30 + 1), nat_type,font=resultFont,fill=(0,0,0))
 		
 		files = []
 		if (totalTraffic < 0):
