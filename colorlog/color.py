@@ -71,6 +71,11 @@ def deco(s: str, fg_color=0x111, bg_color=None, const_deco='', **kwargs):
             reverse: reverse backgound and forground color.
             concealed: Concealed on.
     '''
+    if not isinstance(s, str):
+        s = str(s)
+    if not isinstance(const_deco, str):
+        const_deco = str(const_deco)
+
     if const_deco:
         return const_deco + s
     

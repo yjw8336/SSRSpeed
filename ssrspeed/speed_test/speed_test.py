@@ -3,7 +3,9 @@
 import logging
 import copy
 import socket
+import socks
 import time
+import pynat
 
 
 logger = logging.getLogger("Sub")
@@ -51,6 +53,13 @@ class SpeedTest(object):
 			"rawGooglePingStatus": [],
 			"webPageSimulation":{
 				"results":[]
+			},
+			"ntt": {
+				"type": "",
+				"internal_ip": "",
+				"internal_port": 0,
+				"public_ip": "",
+				"public_port": 0
 			}
 		}
 
@@ -144,6 +153,27 @@ class SpeedTest(object):
 				logger.exception("")
 				pass
 		return res
+
+	def __nat_type_test(self):
+
+		s = socks.socksocket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.set_proxy(socks.PROXY_TYPE_SOCKS5, LOCAL_ADDRESS, LOCAL_PORT)
+		sport = config["ntt"]["internal_port"]
+		try:
+			logger.info("Performing UDP NAT Type Test")
+			t, eip, eport, sip = pynat.get_ip_info(
+				source_ip=config["ntt"]["internal_ip"],
+				source_port=sport,
+				include_internal=True,
+				sock=s
+			)
+			return t, eip, eport, sip, sport
+		except:
+			logger.exception("\n")
+			return None, None, None, None, None
+		finally:
+			s.close()
+
 	
 	def __start_test(self, test_mode = "FULL"):
 		self.__results = []
@@ -153,11 +183,11 @@ class SpeedTest(object):
 		while node:
 			done_nodes += 1
 			try:
-				config = node.config
+				cfg = node.config
 				logger.info(
 					"Starting test {group} - {remarks} [{cur}/{tol}]".format(
-						group = config["group"],
-						remarks = config["remarks"],
+						group = cfg["group"],
+						remarks = cfg["remarks"],
 						cur = done_nodes,
 						tol = total_nodes
 					)
@@ -168,11 +198,11 @@ class SpeedTest(object):
 					node = self.__get_next_config()
 					continue
 				_item = self.__getBaseResult()
-				_item["group"] = config["group"]
-				_item["remarks"] = config["remarks"]
+				_item["group"] = cfg["group"]
+				_item["remarks"] = cfg["remarks"]
 				self.__current = _item
-				config["server_port"] = int(config["server_port"])
-				client.startClient(config)
+				cfg["server_port"] = int(cfg["server_port"])
+				client.startClient(cfg)
 
 				# Check client started
 				time.sleep(1)
@@ -183,7 +213,7 @@ class SpeedTest(object):
 					if ct > 3:
 						client_started = False
 						break
-					client.startClient(config)
+					client.startClient(cfg)
 					time.sleep(1)
 				if not client_started:
 					logger.error("Failed to start client.")
@@ -214,10 +244,10 @@ class SpeedTest(object):
 					logger.error("Port {} closed.".format(LOCAL_PORT))
 					continue
 
-				inboundInfo = self.__geoIPInbound(config)
-				_item["geoIP"]["inbound"]["address"] = "{}:{}".format(inboundInfo[0],config["server_port"])
+				inboundInfo = self.__geoIPInbound(cfg)
+				_item["geoIP"]["inbound"]["address"] = inboundInfo[0]
 				_item["geoIP"]["inbound"]["info"] = inboundInfo[1]
-				pingResult = self.__tcpPing(config["server"], config["server_port"])
+				pingResult = self.__tcpPing(cfg["server"], cfg["server_port"])
 				if (isinstance(pingResult, dict)):
 					for k in pingResult.keys():
 						_item[k] = pingResult[k]
@@ -241,17 +271,49 @@ class SpeedTest(object):
 							)
 						)
 					elif test_mode == "PING":
-						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - [WebPageSimulation]".format
+						nat_info = ""
+						if config["ntt"]["enabled"]:
+							t, eip, eport, sip, sport = self.__nat_type_test()
+							_item["ntt"]["type"] = t
+							_item["ntt"]["internal_ip"] = sip
+							_item["ntt"]["internal_port"] = sport
+							_item["ntt"]["public_ip"] = eip
+							_item["ntt"]["public_port"] = eport
+
+							if t:
+								nat_info += " - NAT Type: " + t
+								if t != pynat.BLOCKED:
+									nat_info += " - Internal End: {}:{}".format(sip, sport)
+									nat_info += " - Public End: {}:{}".format(eip, eport)
+
+						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}]{}".format
 							(
 								_item["group"],
 								_item["remarks"],
 								_item["loss"] * 100,
 								int(_item["ping"] * 1000),
 								_item["gPingLoss"] * 100,
-								int(_item["gPing"] * 1000)
+								int(_item["gPing"] * 1000),
+								nat_info
 							)
 						)
-					elif test_mode == "FULL":
+
+					elif test_mode == "FULL":	
+						nat_info = ""
+						if config["ntt"]["enabled"]:
+							t, eip, eport, sip, sport = self.__nat_type_test()
+							_item["ntt"]["type"] = t
+							_item["ntt"]["internal_ip"] = sip
+							_item["ntt"]["internal_port"] = sport
+							_item["ntt"]["public_ip"] = eip
+							_item["ntt"]["public_port"] = eport
+
+							if t:
+								nat_info += " - NAT Type: " + t
+								if t != pynat.BLOCKED:
+									nat_info += " - Internal End: {}:{}".format(sip, sport)
+									nat_info += " - Public End: {}:{}".format(eip, eport)
+
 						testRes = st.startTest(self.__testMethod)
 						if (int(testRes[0]) == 0):
 							logger.warn("Re-testing node.")
@@ -264,7 +326,7 @@ class SpeedTest(object):
 						except:
 							pass
 
-						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - AvgSpeed: [{:.2f}MB/s] - MaxSpeed: [{:.2f}MB/s]".format
+						logger.info("[{}] - [{}] - Loss: [{:.2f}%] - TCP Ping: [{:.2f}] - Google Loss: [{:.2f}%] - Google Ping: [{:.2f}] - AvgSpeed: [{:.2f}MB/s] - MaxSpeed: [{:.2f}MB/s]{}".format
 							(
 								_item["group"],
 								_item["remarks"],
@@ -273,7 +335,8 @@ class SpeedTest(object):
 								_item["gPingLoss"] * 100,
 								int(_item["gPing"] * 1000),
 								_item["dspeed"] / 1024 / 1024,
-								_item["maxDSpeed"] / 1024 / 1024
+								_item["maxDSpeed"] / 1024 / 1024,
+								nat_info
 							)
 						)
 					else:

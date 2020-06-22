@@ -71,11 +71,14 @@ The platform that ability to run Python and Shadowsocks, ShadowsocksR, V2Ray.
   - [Professional-V1](https://t.me/V1_BLOG)
   - [Julydate 七夏浅笑](https://www.julydate.com/)
 - Sponsors
-  - [YoYu- Better Network Acceleration](https://home.yoyu.dev/aff.php?aff=115)
-  - [N3RO Network](https://n3ro.io/register?ref=5027)
+  - [YoYu - Global Accelerate](https://home.yoyu.ltd/aff.php?aff=115)
+  - [YToo - Global Accelerate](https://ytoo.li/aff.php?aff=25)
+  - [nat.bz](https://nat.bz/whmcs)
+  - [AmyTelecom](https://amysecure.com)
 - This project uses the following open source projects
   - [speedtest-cli](https://github.com/sivel/speedtest-cli)
   - [Fast.com-cli](https://github.com/nkgilley/fast.com)
+  - [pynat](https://github.com/arantonitis/pynat)
 
 ## Getting started
 
