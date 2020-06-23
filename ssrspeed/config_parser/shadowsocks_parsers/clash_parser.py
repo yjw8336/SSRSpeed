@@ -15,8 +15,9 @@ class ParserShadowsocksClash(object):
 	def __getShadowsocksBaseConfig(self):
 		return copy.deepcopy(self.__baseConfig)
 
-	def __parseConfig(self,clashCfg):
-		for cfg in clashCfg["Proxy"]:
+	def __parseConfig(self,clashCfg: dict):
+		proxies = clashCfg["proxies"] if clashCfg.get("proxies", None) is not None else clashCfg["Proxy"]
+		for cfg in proxies:
 			if (cfg.get("type","N/A").lower() != "ss"):
 				logger.info("Config {}, type {} not support.".format(
 					cfg["name"],
