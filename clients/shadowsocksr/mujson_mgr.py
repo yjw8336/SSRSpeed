@@ -40,21 +40,21 @@ class MuMgr(object):
 		try:
 			self.server_addr = get_config().SERVER_PUB_ADDR
 		except:
-			self.server_addr = '127.0.0.1'
+			self.server_addr = '192.168.2.191'
 		self.data = MuJsonLoader()
 
-		if self.server_addr == '127.0.0.1':
+		if self.server_addr == '192.168.2.191':
 			self.server_addr = self.getipaddr()
 
 	def getipaddr(self, ifname='eth0'):
 		import socket
 		import struct
-		ret = '127.0.0.1'
+		ret = '192.168.2.191'
 		try:
 			ret = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
 		except:
 			pass
-		if ret == '127.0.0.1':
+		if ret == '192.168.2.191':
 			try:
 				import fcntl
 				s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

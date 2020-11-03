@@ -23,7 +23,7 @@ _ShadowsocksConfig = {
 }
 
 def getConfig(
-	local_address: str = "127.0.0.1",
+	local_address: str = "192.168.2.191",
 	local_port: int = 1087,
 	timeout: int = 10
 ):

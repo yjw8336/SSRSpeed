@@ -31,4 +31,4 @@ for item in loggerList:
 	item.addHandler(fileHandler)
 	item.addHandler(consoleHandler)
 
-webPageSimulation.startWebPageSimulationTest("127.0.0.1", 1080)
+webPageSimulation.startWebPageSimulationTest("192.168.2.191", 1080)

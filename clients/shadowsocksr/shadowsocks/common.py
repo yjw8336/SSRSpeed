@@ -398,7 +398,7 @@ def test_pack_header():
 
 def test_ip_network():
     ip_network = IPNetwork('127.0.0.0/24,::ff:1/112,::1,192.168.1.1,192.0.2.0')
-    assert '127.0.0.1' in ip_network
+    assert '192.168.2.191' in ip_network
     assert '127.0.1.1' not in ip_network
     assert ':ff:ffff' in ip_network
     assert '::ffff:1' not in ip_network

@@ -104,13 +104,13 @@ def speedTestSocket(port):
 	MAX_TIME = 0
 	TOTAL_RECEIVED = 0
 	EXIT_FLAG = False
-	socks.set_default_proxy(socks.SOCKS5,"127.0.0.1", LOCAL_PORT)
+	socks.set_default_proxy(socks.SOCKS5,"192.168.2.191", LOCAL_PORT)
 	socket.socket = socks.socksocket
 
 	for i in range(0,MAX_THREAD):
 		nmsl = threading.Thread(target=speedTestThread,args=(res[0],))
 		nmsl.start()
-		
+
 	maxSpeedList = []
 	maxSpeed = 0
 	currentSpeed = 0

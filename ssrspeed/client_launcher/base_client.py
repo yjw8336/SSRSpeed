@@ -15,13 +15,13 @@ from config import config
 
 class BaseClient(object):
 	def __init__(self):
-		self._localAddress = config.get("localAddress","127.0.0.1")
+		self._localAddress = config.get("localAddress","192.168.2.191")
 		self._localPort = config.get("localPort",1087)
 		self._configList = []
 		self._config = {}
 		self._platform = self._checkPlatform()
 		self._process = None
-	
+
 	def _checkPlatform(self):
 		return check_platform()
 

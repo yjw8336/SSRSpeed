@@ -1,7 +1,7 @@
 # coding:utf-8
 
 import copy
-	
+
 V2RayBaseConfig = {
 	"remarks": "",
 	"group": "N/A",
@@ -11,7 +11,7 @@ V2RayBaseConfig = {
 	"inbounds": [
 		{
 			"port": 1087,
-			"listen": "127.0.0.1",
+			"listen": "192.168.2.191",
 			"protocol": "socks",
 			"sniffing": {"enabled": True, "destOverride": ["http", "tls"]},
 			"settings": {"auth": "noauth", "udp": True, "ip": None, "clients": None},
@@ -142,9 +142,9 @@ class V2RayBaseConfigs:
 	@staticmethod
 	def get_config():
 		return copy.deepcopy(V2RayBaseConfig)
-	
+
 	@staticmethod
-	def generate_config(config: dict, listen: str = "127.0.0.1", port: int = 1087) -> dict:
+	def generate_config(config: dict, listen: str = "192.168.2.191", port: int = 1087) -> dict:
 		_config = V2RayBaseConfigs.get_config()
 
 		_config["inbounds"][0]["listen"] = listen

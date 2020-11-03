@@ -342,7 +342,7 @@ class DNSResolver(object):
                                 if hostname:
                                     self._hosts[hostname] = ip
         except IOError:
-            self._hosts['localhost'] = '127.0.0.1'
+            self._hosts['localhost'] = '192.168.2.191'
 
     def add_to_loop(self, loop):
         if self._loop:

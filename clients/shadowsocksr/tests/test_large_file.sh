@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PYTHON="coverage run -p"
-URL=http://127.0.0.1/file
+URL=http://192.168.2.191/file
 
 mkdir -p tmp
 
@@ -14,7 +14,7 @@ SERVER=$!
 sleep 3
 
 time curl -o tmp/expected $URL
-time curl -o tmp/result --socks5-hostname 127.0.0.1:1081 $URL
+time curl -o tmp/result --socks5-hostname 192.168.2.191:1081 $URL
 
 kill -s SIGINT $LOCAL
 kill -s SIGINT $SERVER

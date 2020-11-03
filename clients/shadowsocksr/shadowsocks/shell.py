@@ -108,7 +108,7 @@ def check_config(config, is_local):
 
     if config.get('local_address', '') in [b'0.0.0.0']:
         logging.warning('warning: local set to listen on 0.0.0.0, it\'s not safe')
-    if config.get('server', '') in ['127.0.0.1', 'localhost']:
+    if config.get('server', '') in ['192.168.2.191', 'localhost']:
         logging.warning('warning: server set to listen on %s:%s, are you sure?' %
                      (to_str(config['server']), config['server_port']))
     if config.get('timeout', 300) < 100:
@@ -249,7 +249,7 @@ def get_config(is_local):
     config['log-file'] = config.get('log-file', '/var/log/shadowsocksr.log')
     config['verbose'] = config.get('verbose', False)
     config['connect_verbose_info'] = config.get('connect_verbose_info', 0)
-    config['local_address'] = to_str(config.get('local_address', '127.0.0.1'))
+    config['local_address'] = to_str(config.get('local_address', '192.168.2.191'))
     config['local_port'] = config.get('local_port', 1080)
     if is_local:
         if config.get('server', None) is None:
@@ -318,7 +318,7 @@ Proxy options:
   -c CONFIG              path to config file
   -s SERVER_ADDR         server address
   -p SERVER_PORT         server port, default: 8388
-  -b LOCAL_ADDR          local binding address, default: 127.0.0.1
+  -b LOCAL_ADDR          local binding address, default: 192.168.2.191
   -l LOCAL_PORT          local port, default: 1080
   -k PASSWORD            password
   -m METHOD              encryption method, default: aes-256-cfb

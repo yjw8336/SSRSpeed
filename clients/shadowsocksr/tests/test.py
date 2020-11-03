@@ -106,7 +106,7 @@ try:
             time.sleep(2)
 
             p3 = Popen(['curl', config.url, '-v', '-L',
-                        '--socks5-hostname', '127.0.0.1:1081',
+                        '--socks5-hostname', '192.168.2.191:1081',
                         '-m', '15', '--connect-timeout', '10'],
                        stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
             if p3 is not None:

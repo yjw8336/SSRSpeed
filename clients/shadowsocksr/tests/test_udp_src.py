@@ -4,7 +4,7 @@ import socket
 import socks
 
 
-SERVER_IP = '127.0.0.1'
+SERVER_IP = '192.168.2.191'
 SERVER_PORT = 1081
 
 
@@ -13,20 +13,20 @@ if __name__ == '__main__':
     sock_out = socks.socksocket(socket.AF_INET, socket.SOCK_DGRAM,
                                 socket.SOL_UDP)
     sock_out.set_proxy(socks.SOCKS5, SERVER_IP, SERVER_PORT)
-    sock_out.bind(('127.0.0.1', 9000))
+    sock_out.bind(('192.168.2.191', 9000))
 
     sock_in1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,
                              socket.SOL_UDP)
     sock_in2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,
                              socket.SOL_UDP)
 
-    sock_in1.bind(('127.0.0.1', 9001))
-    sock_in2.bind(('127.0.0.1', 9002))
+    sock_in1.bind(('192.168.2.191', 9001))
+    sock_in2.bind(('192.168.2.191', 9002))
 
-    sock_out.sendto(b'data', ('127.0.0.1', 9001))
+    sock_out.sendto(b'data', ('192.168.2.191', 9001))
     result1 = sock_in1.recvfrom(8)
 
-    sock_out.sendto(b'data', ('127.0.0.1', 9002))
+    sock_out.sendto(b'data', ('192.168.2.191', 9002))
     result2 = sock_in2.recvfrom(8)
 
     sock_out.close()
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     sock_out = socks.socksocket(socket.AF_INET, socket.SOCK_DGRAM,
                                 socket.SOL_UDP)
     sock_out.set_proxy(socks.SOCKS5, SERVER_IP, SERVER_PORT)
-    sock_out.bind(('127.0.0.1', 9000))
+    sock_out.bind(('192.168.2.191', 9000))
 
     sock_in1 = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM,
                              socket.SOL_UDP)
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     sock_out = socks.socksocket(socket.AF_INET, socket.SOCK_DGRAM,
                                 socket.SOL_UDP)
     sock_out.set_proxy(socks.SOCKS5, SERVER_IP, SERVER_PORT)
-    sock_out.bind(('127.0.0.1', 9003))
+    sock_out.bind(('192.168.2.191', 9003))
 
     sock_in1 = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM,
                              socket.SOL_UDP)

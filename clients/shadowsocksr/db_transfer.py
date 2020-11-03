@@ -283,7 +283,7 @@ class DbTransfer(TransferBase):
 		super(DbTransfer, self).__init__()
 		self.user_pass = {} #记录更新此用户流量时被跳过多少次
 		self.cfg = {
-			"host": "127.0.0.1",
+			"host": "192.168.2.191",
 			"port": 3306,
 			"user": "ss",
 			"password": "pass",
@@ -309,7 +309,7 @@ class DbTransfer(TransferBase):
 	def update_all_user(self, dt_transfer):
 		import cymysql
 		update_transfer = {}
-		
+
 		query_head = 'UPDATE user'
 		query_sub_when = ''
 		query_sub_when2 = ''

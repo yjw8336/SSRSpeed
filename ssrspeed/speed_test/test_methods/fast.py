@@ -20,8 +20,8 @@ def setProxy(LOCAL_ADDRESS,LOCAL_PORT):
 	socket.socket = socks.socksocket
 
 '''
-proxy = {"http":"http://127.0.0.1:1081"}
-proxySupport = urllib.request.ProxyHandler({"http":"http://127.0.0.1:1081"})
+proxy = {"http":"http://192.168.2.191:1081"}
+proxySupport = urllib.request.ProxyHandler({"http":"http://192.168.2.191:1081"})
 opener = urllib.request.build_opener(proxySupport)
 urllib.request.install_opener(opener)
 '''
@@ -95,7 +95,7 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 
 	# From that javascript file, get the token:
 	url = 'https://fast.com' + jsname
-	if verbose: 
+	if verbose:
 		logger.debug("javascript url is" + url)
 	try:
 		urlresult = urllib.request.urlopen(url)
@@ -105,10 +105,10 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 	allJSstuff = urlresult.read().decode().strip() # this is a obfuscated Javascript file
 	for line in allJSstuff.split(','):
 		if line.find('token:') >= 0:
-			if verbose: 
+			if verbose:
 				logger.debug("line is" + line)
 			token = line.split('"')[1]
-			if verbose: 
+			if verbose:
 				logger.debug("token is" + token)
 			if token:
 				break
@@ -125,7 +125,7 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 		baseurl = 'http://[' + ipv6 + ']/'
 
 	url = baseurl + 'netflix/speedtest?https=true&token=' + token + '&urlCount=3' # Not more than 3 possible
-	if verbose: 
+	if verbose:
 		logger.debug("API url is" + url)
 	try:
 		urlresult = urllib.request.urlopen(url, None, 2)  # 2 second time-out
@@ -140,7 +140,7 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 
 	# Prepare for getting those URLs in a threaded way:
 	amount = len(parsedjson)
-	if verbose: 
+	if verbose:
 		logger.debug("Number of URLs:" + str(amount))
 	threads = [None] * amount
 	results = [0] * amount
@@ -148,7 +148,7 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 	i = 0
 	for jsonelement in parsedjson:
 		urls[i] = jsonelement['url']  # fill out speed test url from the json format
-		if verbose: 
+		if verbose:
 			logger.debug(jsonelement['url'])
 		i = i+1
 
@@ -157,7 +157,7 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 		fqdn = url.split('/')[2]
 		try:
 			socket.getaddrinfo(fqdn, None, socket.AF_INET6)
-			if verbose: 
+			if verbose:
 				logger.info("IPv6")
 		except:
 			pass
@@ -194,7 +194,7 @@ def fast_com(verbose=False, maxtime=15, forceipv4=False, forceipv6=False):
 
 	Mbps = (application_bytes_to_networkbits(highestspeedkBps)/1024)
 	Mbps = float("%.1f" % Mbps)
-	if verbose: 
+	if verbose:
 		logger.info("Highest Speed (kB/s):" + str(highestspeedkBps) + "aka Mbps "+ str(Mbps))
 
 	return highestspeedkBps*1024

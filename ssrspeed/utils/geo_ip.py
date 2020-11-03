@@ -17,8 +17,8 @@ def parseLocation():
 	try:
 		logger.info("Starting parse location.")
 		rep = requests.get("https://api.ip.sb/geoip",proxies = {
-			"http":"socks5h://127.0.0.1:%d" % LOCAL_PORT,
-			"https":"socks5h://127.0.0.1:%d" % LOCAL_PORT
+			"http":"socks5h://192.168.2.191:%d" % LOCAL_PORT,
+			"https":"socks5h://192.168.2.191:%d" % LOCAL_PORT
 		},timeout=5)
 		tmp = rep.json()
 		logger.info("Server Country Code : %s,Continent Code : %s,ISP : %s" % (tmp["country_code"],tmp["continent_code"],tmp["organization"]))
@@ -63,8 +63,8 @@ def IPLoc(ip = ""):
 		if (ip == "N/A"):
 			ip = ""
 		rep = requests.get("https://api.ip.sb/geoip/{}".format(ip),proxies = {
-			"http":"socks5h://127.0.0.1:%d" % LOCAL_PORT,
-			"https":"socks5h://127.0.0.1:%d" % LOCAL_PORT
+			"http":"socks5h://192.168.2.191:%d" % LOCAL_PORT,
+			"https":"socks5h://192.168.2.191:%d" % LOCAL_PORT
 		},timeout=5)
 		tmp = rep.json()
 		return tmp

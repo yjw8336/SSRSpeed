@@ -143,7 +143,7 @@ The parameter priority is as follows:
 
 ~~~~text
 python web.py
-You can now access the WebUI through http://127.0.0.1:10870
+You can now access the WebUI through http://192.168.2.191:10870
 ~~~~
 
 ## Modify the speed source of Socket mode

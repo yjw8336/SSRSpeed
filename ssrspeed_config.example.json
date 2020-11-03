@@ -1,5 +1,5 @@
 {
-	"localAddress": "127.0.0.1",
+	"localAddress": "192.168.2.191",
 	"localPort": 1087,
 	"excludeRemarks": [
 		"剩余流量",
@@ -8,7 +8,7 @@
 	],
 	"proxy": {
 		"enabled": false,
-		"address": "127.0.0.1",
+		"address": "192.168.2.191",
 		"port": 1080,
 		"username": null,
 		"password": null
@@ -19,7 +19,7 @@
 		"internal_port": 54320
 	},
 	"web": {
-		"listen": "127.0.0.1",
+		"listen": "192.168.2.191",
 		"port": 10870,
 		"token": ""
 	},

@@ -33,7 +33,7 @@ class Statistics:
 	@property
 	def stopped(self):
 		return self._stopped
-	
+
 	@property
 	def time_used(self):
 		return self._time_used
@@ -80,7 +80,7 @@ class Statistics:
 		mb_red = self._total_red / 1024 / 1024
 		print("\r[" + "=" * self._count + "] [{:.2f} MB/s]".format(mb_red / self._time_used), end='\n')
 		logger.info("Fetched {:.2f} MB in {:.2f}s".format(mb_red, self._time_used))
-	
+
 	def _show_progress(self, delta_time: int):
 		speed = (self._total_red - self._delta_red) / delta_time
 		speed_mb = speed / 1024 / 1024
@@ -90,7 +90,7 @@ class Statistics:
 		print("\r[" + "=" * self._count + "> [{:.2f} MB/s]".format(speed_mb), end='')
 		self._speed_list.append(speed)
 
-async def _fetch(url: str, sta: Statistics, host: str = "127.0.0.1", port: int = 1087):
+async def _fetch(url: str, sta: Statistics, host: str = "192.168.2.191", port: int = 1087):
 	connector = SocksConnector(
 		socks_ver = SocksVer.SOCKS5,
 		host = host,
@@ -110,7 +110,7 @@ async def _fetch(url: str, sta: Statistics, host: str = "127.0.0.1", port: int =
 				await sta.record(len(chunk))
 
 def start(
-	proxy_host = "127.0.0.1",
+	proxy_host = "192.168.2.191",
 	proxy_port: int = 1087,
 	workers: int = WORKERS
 	):

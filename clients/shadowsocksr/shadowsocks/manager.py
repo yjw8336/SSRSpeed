@@ -210,14 +210,14 @@ def test():
         config = shell.get_config(True)
         config = config.copy()
         a_config = {
-            'server': '127.0.0.1',
+            'server': '192.168.2.191',
             'local_port': 1081,
             'port_password': {
                 '8381': 'foobar1',
                 '8382': 'foobar2'
             },
             'method': 'aes-256-cfb',
-            'manager_address': '127.0.0.1:6001',
+            'manager_address': '192.168.2.191:6001',
             'timeout': 60,
             'fast_open': False,
             'verbose': 2
@@ -232,7 +232,7 @@ def test():
     time.sleep(1)
     manager = enc[0]
     cli = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    cli.connect(('127.0.0.1', 6001))
+    cli.connect(('192.168.2.191', 6001))
 
     # test add and remove
     time.sleep(1)
@@ -254,7 +254,7 @@ def test():
     data = encrypt.encrypt_all(b'asdfadsfasdf', 'aes-256-cfb', 1,
                                header + b'GET /\r\n\r\n')
     tcp_cli = socket.socket()
-    tcp_cli.connect(('127.0.0.1', 7001))
+    tcp_cli.connect(('192.168.2.191', 7001))
     tcp_cli.send(data)
     tcp_cli.recv(4096)
     tcp_cli.close()
@@ -268,11 +268,11 @@ def test():
     logging.info('TCP statistics test passed')
 
     # test statistics for UDP
-    header = common.pack_addr(b'127.0.0.1') + struct.pack('>H', 80)
+    header = common.pack_addr(b'192.168.2.191') + struct.pack('>H', 80)
     data = encrypt.encrypt_all(b'foobar2', 'aes-256-cfb', 1,
                                header + b'test')
     udp_cli = socket.socket(type=socket.SOCK_DGRAM)
-    udp_cli.sendto(data, ('127.0.0.1', 8382))
+    udp_cli.sendto(data, ('192.168.2.191', 8382))
     tcp_cli.close()
 
     data, addr = cli.recvfrom(1506)
